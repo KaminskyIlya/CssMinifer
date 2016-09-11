@@ -44,21 +44,25 @@ public class TextProcessor extends SimpleProcessor
         {
             inBlock |= isNormal() && current == '{'; // if block of styles started?
         }
-        if ( isNormal() ) inBlock &= current != '}'; // if block of styles finished?
+
 
         inValue |= inBlock && current == ':' && !isInParenthesis(); // if value of style began?
         inValue &= inBlock && current != ';'; // if value of style ended?
 
         inAttr |= !inBlock && current == '['; // if attribute value selector began?
-        inAttr &= !inBlock && current != ']'; // if attribute value selector ended?
+
 
         if ( current == '(' && isNormal() ) inParenthesis++;
-        if ( current == ')' && isNormal() ) inParenthesis--;
+
     }
 
     public void after(char current)
     {
         super.after(current);
+
+        inAttr &= !inBlock && current != ']'; // if attribute value selector ended?
+        if ( current == ')' && isNormal() ) inParenthesis--;
+        if ( isNormal() ) inBlock &= current != '}'; // if block of styles finished?
     }
 
     public boolean canProcess()

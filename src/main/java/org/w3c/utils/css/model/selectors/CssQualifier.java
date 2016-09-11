@@ -1,9 +1,11 @@
 package org.w3c.utils.css.model.selectors;
 
+import org.w3c.utils.css.filters.proc.FlowProcessorDetector;
 import org.w3c.utils.css.filters.proc.SelectorProcessor;
 import org.w3c.utils.css.io.CharsReader;
 import org.w3c.utils.css.model.exceptions.CssParsingException;
 import org.w3c.utils.css.model.exceptions.EExceptionLevel;
+import org.w3c.utils.css.model.processors.TokenExtractor;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -77,19 +79,16 @@ public class CssQualifier extends AbstractSelector
     {
         SelectorProcessor processor = new SelectorProcessor();
         CharsReader reader = new CharsReader(selector);
+        TokenExtractor<SelectorProcessor> extractor = new TokenExtractor<SelectorProcessor>(reader, processor);
 
         while (reader.available())
         {
-
-            if (processor.isInTag())                 processTypeSelector(reader, processor);
-            else if (processor.isInHash())           processIdSelector(reader, processor);
-            else if (processor.isInClassName())      processClassSelector(reader, processor);
-            else if (processor.isInPseudoClass())    processPseudoExpression(reader, processor);
-            else if (processor.isInAttr())           processAttributeSelector(reader, processor);
-            else if ( processor.isInWhitespace() )
-            {
-                processSymbol(reader, processor);
-            }
+            if (processor.isInTag())                 processTypeSelector(extractor);
+            else if (processor.isInHash())           processIdSelector(extractor);
+            else if (processor.isInClassName())      processClassSelector(extractor);
+            else if (processor.isInPseudoClass())    processPseudoExpression(extractor);
+            else if (processor.isInAttr())           processAttributeSelector(extractor);
+            else if ( processor.isInWhitespace() )   processWhitespaces(extractor);
             // Without any conjunctions!
             else
             {
@@ -98,109 +97,138 @@ public class CssQualifier extends AbstractSelector
         }
     }
 
-    private void processTypeSelector(CharsReader reader, SelectorProcessor processor)
+    private void processWhitespaces(final TokenExtractor<SelectorProcessor> extractor)
     {
-        if ('*' != processor.getPreviousChar()) specificity.addQualifier();
-
-        reader.mark();
-        while (reader.available() && processor.isInTag())
+        extractor.extractToken(new FlowProcessorDetector()
         {
-            processSymbol(reader, processor);
-        }
-        type = reader.readMarked();
+            public boolean canProcess()
+            {
+                return extractor.getProcessor().isInWhitespace();
+            }
+        });
     }
 
-    private void processIdSelector(CharsReader reader, SelectorProcessor processor)
+    private void processTypeSelector(final TokenExtractor<SelectorProcessor> extractor)
+    {
+        String type = extractor.extractToken(new FlowProcessorDetector()
+        {
+            public boolean canProcess()
+            {
+                return extractor.getProcessor().isInTag();
+            }
+        });
+        if ( !type.equals("*") ) specificity.addQualifier();
+        // TODO: analyze namespaces
+    }
+
+    private void processIdSelector(final TokenExtractor<SelectorProcessor> extractor)
     {
         specificity.addIdSelector();
 
-        reader.mark();
-        while (reader.available() && processor.isInHash())
+        String hash = extractor.extractToken(new FlowProcessorDetector()
         {
-            processSymbol(reader, processor);
-        }
-        hashes.add(reader.readMarked());
+            public boolean canProcess()
+            {
+                return extractor.getProcessor().isInHash();
+            }
+        });
+        // TODO: check hash syntax
+        hashes.add(hash);
     }
 
-    private void processClassSelector(CharsReader reader, SelectorProcessor processor)
+    private void processClassSelector(final TokenExtractor<SelectorProcessor> extractor)
     {
         specificity.addSelectorExplanation();
 
-        reader.mark();
-        while ( reader.available() && processor.isInClassName() && (reader.next() != '.') )
+        String cls = extractor.extractToken(new FlowProcessorDetector()
         {
-            processSymbol(reader, processor);
-        }
-        classes.add(reader.readMarked());
+            public boolean canProcess()
+            {
+                return extractor.getProcessor().isInClassName();
+            }
+        });
+        classes.add(cls);
     }
 
-    private void processAttributeSelector(CharsReader reader, SelectorProcessor processor)
+    private void processAttributeSelector(final TokenExtractor<SelectorProcessor> extractor)
     {
         specificity.addSelectorExplanation();
 
-        //matchers.add(new AttributeSelector(reader, processor));
+        int pos = extractor.getReader().getPos();
 
-        reader.mark();
-        while ( reader.available() && processor.isInAttr() && (reader.next() != '[') )
+        String matcher = extractor.extractToken(new FlowProcessorDetector()
         {
-            processSymbol(reader, processor);
+            public boolean canProcess()
+            {
+                return extractor.getProcessor().isInAttr();
+            }
+        });
+
+        matcher = matcher.replaceFirst("^\\[", "").replaceFirst("\\]$", "");
+        // TODO: format check
+
+        try
+        {
+            AttributeSelector selector = new AttributeSelector(matcher);
+            matchers.add(selector);
         }
-        matchers.add(new AttributeSelector(reader.readMarkedTrimmedBoth()));
+        catch (CssParsingException e)
+        {
+            throw new CssParsingException(e.getMessage(), pos + e.getPosition(), e.getLevel());
+        }
     }
 
-    private void processPseudoExpression(CharsReader reader, SelectorProcessor selector)
+    private void processPseudoExpression(final TokenExtractor<SelectorProcessor> extractor)
     {
-        reader.mark();
-        while (reader.available() && !selector.isInParenthesis())
-        {
-            processSymbol(reader, selector);
-        }
-        String pseudoName = reader.readMarkedTrimmedRight();
+        int pos = extractor.getReader().getPos();
 
-        if (pseudoName.toLowerCase().endsWith("not"))
+        String expression = extractor.extractToken(new FlowProcessorDetector()
         {
-            processNegation(reader, selector);
+            public boolean canProcess()
+            {
+                return extractor.getProcessor().isInPseudoClass();
+            }
+        });
+
+        try
+        {
+            if (expression.toLowerCase().startsWith(":not("))
+            {
+                processNegation(expression);
+            }
+            else
+            {
+                processPseudo(expression);
+            }
         }
-        else
+        catch (CssParsingException e)
         {
-            processPseudo(reader, selector);
+            throw new CssParsingException(e.getMessage(), pos + e.getPosition(), e.getLevel());
         }
     }
 
-    private void processPseudo(CharsReader reader, SelectorProcessor processor)
+    private void processPseudo(String expression)
     {
         specificity.addSelectorExplanation();
-
-        while (reader.available() && processor.isInPseudoClass())
-        {
-            processSymbol(reader, processor);
-        }
+        //TODO: need to check syntax
+        pseudo.add(expression); // TODO: need make true model
     }
-
-
 
     /**
      * Calculates specificity for negate expression (for included selector)
      */
-    private void processNegation(CharsReader reader, SelectorProcessor selector)
+    private void processNegation(String expression)
     {
-        // Extract expression (simple selector)
-        reader.mark(1);
-        while (reader.available() && selector.isInPseudoClass())
-        {
-            processSymbol(reader, selector);
-        }
-        String expression = reader.readMarked();
+        String negation = expression.replaceFirst("^:not\\(", "").replaceFirst("\\)$", "");
 
         // Check expression syntax
-        if ( expression.length() < 2)
+        if ( negation.length() < 2)
         {
-            throw new CssParsingException("Expected pseudo-class or pseudo-element name", reader.getPos() - expression.length(), EExceptionLevel.ERROR);
+            throw new CssParsingException("Empty negation in " + expression, 5, EExceptionLevel.ERROR);
         }
-        expression = expression.substring(1, expression.length() - 1);
 
         // Calculate included selector specificity
-        CssQualifier q = new CssQualifier(expression);
+        CssQualifier q = new CssQualifier(negation);
         q.analyze();
 
         // Adding included selector specificity to our specificity

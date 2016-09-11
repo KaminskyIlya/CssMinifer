@@ -58,7 +58,7 @@ public class SelectorProcessor extends TextProcessor
         boolean in_brackets = isInParenthesis() || (current == ')');
 
         inAttr |= isNormal() && current == '[';
-        inAttr |= inAttr && !isInString() && prevChar == ']';
+        //inAttr |= inAttr && !isInString() && prevChar == ']';
 
         qualifier = !inBlock && !in_brackets && !inAttr && !isInString() && not("\r\n\f\t ", current);
         if ( qualifier && in("+>~])},", current) ) qualifier = isEscaped();
@@ -100,6 +100,13 @@ public class SelectorProcessor extends TextProcessor
     public void after(char current)
     {
         super.after(current);
+
+        inAttr &= !inBlock && current != ']'; // if attribute value selector ended?
+        wasMatcher &= inAttr;
+
+        //if (cls && current == '.' && isNormal()) cls = false; // if class name is ended?
+
+        if (current == 0) reset();
     }
 
     public boolean isInQualifier()
