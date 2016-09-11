@@ -1,0 +1,159 @@
+Тесты для других миниферов
+
+Важные заметки: http://yui.github.io/yuicompressor/css.html
+
+Числовые 1, 2, 3:
+h4{width:96.666667%;height:0.33333;line-height:0.0001;z-index:10000}
+h4{width:96.666667%;height:.33333;line-height:.0001;z-index:10000}    http://cssminifier.com/
+h4{width:96.666667%;height:.33333px;line-height:.0001;z-index:10000}  http://csscompressor.com/
+h4{width:96.666667%;height:.33333;line-height:.0001;z-index:10000}    http://ru.piliapp.com/minify/yui-compressor/
+h4{width:96.666667%;height:.33333;line-height:.0001;z-index:10000}    http://refresh-sf.com/ - лучший оптимизатор тем не менее
+самый примитивный  http://www.cleancss.com/css-minify/
+еще хуже http://codebeautify.org/css-beautify-minify
+почти такой же http://www.freeformatter.com/css-minifier.html
+
+Цветовые:
+h1{border:none}h2{color:#ff0000}h3{color:#d2b48c}h4{color:rgb(100%,50%,25%);} h5{ color: hsl(0, 100%, 50%) } h6{color:rgb(128,128,128);}
+h1{border:none}h2,h5{color:red}h3{color:tan}h4{color:rgb(100%,50%,25%)}h6{color:grey}
+h1{border:none}h2{color:red}h3{color:#d2b48c}h4{color:#ff8040}h5{color:hsl(0,100%,50%)}h6{color:gray}
+h1{border:0}h2{color:#f00}h3{color:#d2b48c}h4{color:rgb(100%,50%,25%)}h5{color:hsl(0,100%,50%)}h6{color:#808080}
+h1{border:none}h2,h5{color:red}h3{color:tan}h4{color:rgb(100%,50%,25%)}h6{color:grey}
+
+.a1{color: red;}.a1{width: auto;}.a2{color: rosybrown}
+.a1{color:red;width:auto}.a2{color:#bc8f8f}
+.a1{color:red;width:auto}.a2{color:#bc8f8f}
+.a1{color:red}.a1{width:auto}.a2{color:rosybrown}
+.a1{color:red;width:auto}.a2{color:#bc8f8f}
+
+h1{background: url(http://test.me/image/color:#ff00ff) #ff00ff}
+h1{background:url(http://test.me/image/color:#ff00ff) #f0f}
+h1{background:url(http://test.me/image/color:#f0f) #f0f}
+h1{background:url(http://test.me/image/color:#f0f) #f0f}
+h1{background:url(http://test.me/image/color:#ff00ff)#f0f}
+
+body#black { color: black }
+body#black{color:#000}
+body#black{color:#000}
+body#black{color:black}
+body#black{color:#000}
+
+.cantouch {
+    color: rgba(1, 2, 3, 4);
+    filter: chroma(color="#FFFFFF");
+}
+.cantouch{color:rgba(1,2,3,4);filter:chroma(color="#FFFFFF")}
+.cantouch{color:rgba(1,2,3,4);filter:chroma(color="#FFF")}
+---Exception
+.cantouch{color:rgba(1,2,3,4);filter:chroma(color="#FFFFFF")}
+
+
+Константы шрифтов:
+h1{font-weight:thin}h2{font-weight:light}h3{font-weight:normal}h4{font-weight:bold}h5{font-weight:heavy}h6{font-weight:black}
+h1{font-weight:thin}h2{font-weight:light}h3{font-weight:400}h4{font-weight:700}h5{font-weight:heavy}h6{font-weight:#000}
+h1{font-weight:thin}h2{font-weight:light}h3{font-weight:400}h4{font-weight:700}h5{font-weight:heavy}h6{font-weight:#000}
+h1{font-weight:thin}h2{font-weight:light}h3{font-weight:normal}h4{font-weight:bold}h5{font-weight:heavy}h6{font-weight:black}
+h1{font-weight:thin}h2{font-weight:light}h3{font-weight:400}h4{font-weight:700}h5{font-weight:heavy}h6{font-weight:#000}
+
+Константы ключевых кадров:
+@keyframe test{from{left:0;top:10px}to{left:-10px;top:0}}
+@keyframe test{from{left:0;top:10px}to{left:-10px;top:0}}
+to{left:-10px;top:0}
+@keyframe test{from{left:0;top:10px}to{left:-10px;top:0}}
+@keyframe test{from{left:0;top:10px}to{left:-10px;top:0}}
+
+Подстановки:
+.classname {
+    border: none;
+    background: none;
+    outline: none;
+}
+.classname{border:none;background:0 0;outline:0}
+.classname{border:none;background:none;outline:none}
+.classname{border:0;background:0;outline:0}
+.classname{border:none;background:0 0;outline:0}
+
+
+
+Группировки:
+1)
+.a1{margin: 0; margin-left: 10px}.a2{margin: 0}.a2{margin-left: 10px}
+.a1,.a2{margin:0 0 0 10px}
+.a1{margin:0;margin-left:10px}.a2{margin:0;margin-left:10px}
+.a1{margin:0;margin-left:10px}.a2{margin:0}.a2{margin-left:10px}
+.a1,.a2{margin:0 0 0 10px}
+
+a {
+    margin: 0px 0pt 0em 0%;
+    background-position: 0 0ex;
+    padding: 0in 0cm 0mm 0pc
+}
+a{margin:0;background-position:0 0;padding:0}
+a{margin:0;background-position:0 0;padding:0}
+a{margin:0;background-position:0 0;padding:0}
+a{margin:0;background-position:0 0;padding:0}
+
+2)
+body { font-size: 14px; } @media (max-width: 480px) { body {font-size: 12px;} } html { font-size: 14px; } @media (max-width: 480px) { html {font-size: 12px;} }
+body,html{font-size:14px}@media (max-width:480px){body,html{font-size:12px}}
+body{font-size:14px}@media (max-width: 480px){body{font-size:12px}}html{font-size:14px}@media (max-width: 480px){html{font-size:12px}}
+body{font-size:14px}@media(max-width:480px){body{font-size:12px}}html{font-size:14px}@media(max-width:480px){html{font-size:12px}}
+body,html{font-size:14px}@media (max-width:480px){body,html{font-size:12px}}
+
+body{font-size:14px;}@media(min-width:480px)and(max-width: 840px){body{font-size:12px;}}html{font-size:14px;}@media(max-width:840px)and(min-width:480px){html{font-size:12px;}}
+body,html{font-size:14px}@media (min-width:480px) and (max-width:840px){body{font-size:12px}}@media (max-width:840px) and (min-width:480px){html{font-size:12px}}
+body,html{font-size:14px}@media(min-width:480px)and(max-width:840px){body,html{font-size:12px}} - ideal
+
+3)
+body { font-size: 14px; } html { font-size: 14px; }
+body,html{font-size:14px}
+body{font-size:14px}html{font-size:14px}
+body{font-size:14px}html{font-size:14px}
+body,html{font-size:14px}
+
+4)
+.black { display: block; border: solid 1px; font-size: 12px; color: black; } .red { display: block; border: solid 1px; font-size: 12px; color: red; } .green { display: block; border: solid 1px; font-size: 12px; color: green; }
+.black,.green,.red{display:block;border:1px solid;font-size:12px}.black{color:#000}.red{color:red}.green{color:green}
+.black{display:block;border:solid 1px;font-size:12px;color:#000}.red{display:block;border:solid 1px;font-size:12px;color:red}.green{display:block;border:solid 1px;font-size:12px;color:green}
+.black{display:block;border:solid 1px;font-size:12px;color:black}.red{display:block;border:solid 1px;font-size:12px;color:red}.green{display:block;border:solid 1px;font-size:12px;color:green}
+.black,.green,.red{font-size:12px;border:1px solid;display:block}.black{color:#000}.red{color:red}.green{color:green}
+
+
+Эврестические:
+1)
+.component1 .wrapper .element{font-size:120%}.component2 .wrapper .element{font-size:140%}
+.component1 .wrapper .element{font-size:120%}.component2 .wrapper .element{font-size:140%}
+.component1 .wrapper .element{font-size:120%}.component2 .wrapper .element{font-size:140%}
+.component1 .wrapper .element{font-size:120%}.component2 .wrapper .element{font-size:140%}
+.component1 .wrapper .element{font-size:120%}.component2 .wrapper .element{font-size:140%}
+
+2)
+.component { font-size: 12px; } .component a { font-size: 12px; text-decoration: none; } .component b { font-size: 12px; color: red; }
+.component,.component a,.component b{font-size:12px}.component a{text-decoration:none}.component b{color:red}
+.component{font-size:12px}.component a{font-size:12px;text-decoration:none}.component b{font-size:12px;color:red}
+.component{font-size:12px}.component a{font-size:12px;text-decoration:none}.component b{font-size:12px;color:red}
+.component,.component a,.component b{font-size:12px}.component a{text-decoration:none}.component b{color:red}
+
+5)
+h1{ width: 100% } h2 { /*width: 100%;*/ }
+h1{width:100%}
+h1{width:100%}
+h1{width:100%}
+h1{width:100%}
+
+6)
+.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12{float:left}
+.col-xs-1,.col-xs-10,.col-xs-11,.col-xs-12,.col-xs-2,.col-xs-3,.col-xs-4,.col-xs-5,.col-xs-6,.col-xs-7,.col-xs-8,.col-xs-9{float:left}
+.col-xs-1,.col-xs-2,.col-xs-3,.col-xs-4,.col-xs-5,.col-xs-6,.col-xs-7,.col-xs-8,.col-xs-9,.col-xs-10,.col-xs-11,.col-xs-12{float:left}
+.col-xs-1,.col-xs-2,.col-xs-3,.col-xs-4,.col-xs-5,.col-xs-6,.col-xs-7,.col-xs-8,.col-xs-9,.col-xs-10,.col-xs-11,.col-xs-12{float:left}
+.col-xs-1,.col-xs-10,.col-xs-11,.col-xs-12,.col-xs-2,.col-xs-3,.col-xs-4,.col-xs-5,.col-xs-6,.col-xs-7,.col-xs-8,.col-xs-9{float:left}
+
+
+.classname {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"; /* IE 8 */
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);       /* IE < 8 */
+}
+.classname{-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";filter:alpha(Opacity=80)}
+.classname{-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=80);filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=80)}
+---Exception
+.classname{-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";filter:alpha(Opacity=80)}
+.classname{-ms-filter:"alpha(opacity=80)";filter:alpha(opacity=80)}

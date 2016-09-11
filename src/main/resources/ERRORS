@@ -1,0 +1,82 @@
+Замечания по разработке.
+
+Библиотека должна анализировать минимальную синтаксическую правильность формата CSS.
+Например: не закрытые блоки стилей, inline-комментарии в середине строки, незакрытые блочные комментарии, отсутствие точки с запятой перед следующим стилем.
+При выявлении синтаксических ошибок необходимо рапортовать об этом, подробно объясняя, где возникла ошибка и почему.
+Также, некоторые ошибки могут быть исправлены автоматически (интеллектуальный режим). Но с выдачей предупреждений.
+Незакрытые блочные комментарии исправить автоматически сложнее. Поэтому такие ошибки будут необрабатываемыми.
+
+Вот пример:
+-------------------------------------------------- 1  незакрытая скобка (One token, some lines)
+.documents
+{
+  background: #fff;
+  color: #333;
+
+.documents-item
+{
+  display: block;
+  float: left;
+  ...
+}
+
+----- Предупреждение:
+[WARN]: Probably not closed breaker in <line>.
+.documents
+{
+^
+Breaker was added automatically in <line>.
+
+
+Вот пример:
+-------------------------------------------------- 2  inline-комментарий в середине строки (Symbol + Text)
+
+
+----- Предупреждение:
+[WARN]: Probably incorrect defined inline-comment in <line> at <pos>:
+.icons-list .red { color: red; list-style: none; margin: 1em; //padding: 10px 0 0 0; }
+                                                              ^ problem there
+
+Inline comment was automatically transformed to block comment:
+.icons-list .red { color: red; list-style: none; margin: 1em; /*padding: 10px 0 0 0;*/ }
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+Вот пример:
+-------------------------------------------------- 3  отсутствие точки с запятой (One symbol)
+.adv-search-block
+{
+  border-radius: 5px
+  font-size: 10px;
+}
+
+----- Сведения об ошибке:
+[INFO]: Skipped style separator ';' in <line> at <pos>:
+.adv-search-block
+{
+  border-radius: 5px;
+                    ^ was added automatically
+
+
+Вот пример:
+-------------------------------------------------- 4  неизвестный токен (Token)
+@key-codes
+{
+  ...
+}
+
+----- Сведения об ошибке:
+[ERROR]: Unknown at-rule key-codes in <line> at <pos>:
+@key-codes
+^^^^^^^^^^ unknown rule was not processed
+
+
+Кроме этого могут быть ошибки: опечатка в имени свойства: boder-radius вместо border-radius.
+Недописанное значение свойства:  height: 17p; вместо height: 17px;
+
+
+Кроме того, библиотека должна предлагать возможные варианты рефакторинга файлов, для улучшения минимизации (например для избавления от important).
+Такие советы дает, например, js-compressor, предлагая все локальные переменные завести под один var.
+
+
+

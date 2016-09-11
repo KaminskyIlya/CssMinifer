@@ -1,0 +1,188 @@
+Описание опций компрессии. За счет чего достигается минимизация.
+http://www.w3.org/TR/css-syntax-3/
+
+Стандартные
+--------------------------------------------
+1. +Удаление строчных и блочных комментариев
+2. +Удаление лишних пробелов и табуляций
+3. +Удаление переносов строк
+4. +Удаление концевых разделителей ;
+5. +Удаление повторяющихся разделителей ;;;;
+6. Упрощение неймспейсов "по умолчанию"
+    *|a -> a
+    *|* -> *
+    *[href] -> [href]
+
+
+Числовые        http://www.w3.org/TR/css3-values/
+--------------------------------------------
+1. +Удаление нулей перед дробными числами:   0.5em = .5em
+2. +Снижение точности вещественных чисел до 3-х знаков:    85.4747313275% = 85.475%
+3. +Изменение формы записи чисел: 1000px = 1e3px,  rgba(0,0,0,0.001) = > rgba(0,0,0,1e-3)
+   ВНИМАНИЕ: такая форма записи чисел не поддерживается браузерами (хотя описана в спецификации)
+   Это необходимо вынести в настройки фильтра
+4. Трансформация единиц: font-size: 1.5em -> font-size: 150%,  font-size: .5em -> font-size: 50%   (http://www.w3.org/TR/css3-values/#length-value)
+   50mm -> 5cm   1.57rad = 90deg    1000ms = 1s     1000Hz = 1kHz
+
+Цветовые        http://www.w3.org/TR/css3-color/
+--------------------------------------------
+1. +Сокращение функции rgb/hsl до hex-значения:   rgb(128,127,126) = #807f7e
+2. +Сокращение записи цвета с 6-ти чисел до 3-х:  #888888 = #888
+3. +Снижение цветового пространства до 4К цветов
+   округление 32-битных оттенков до ближайших им 12-битных:   #80705e = #876
+   (это применимо только для цвета текста и границ, а также при линейных градиентах фона; фон трогать лучше не стоит),
+    а. только для цвета теста и тонких линий; бэкграунды и градиенты не изменяются
+    б. для всех значений, включая бэкграунды
+4. +Замена именованных цветов на их цифровые значения.
+5. +Замена цифровых значений предопределеных цветов на их более короткие наименования (#f00 = red, #d2b48c = #ca8 = tan, #a52a2a = brown).
+6. Замена эквивалента rgba(r,g,b,1) = rgb(r,g,b)    hsla(h,s,l,1) = hsl(h,s,l)
+7. Замена color:rgba(0,0,0,0) на color:transparent  (не всеми браузерами поддерживается)
+
+Строковые
+--------------------------------------------
+1. Сокращение псевдонимов загружаемых шрифтов (font alias)
+   вместо @font-face{font-family:'Glyphicons Halflings';...   писать @font-face{font-family:G;...
+   затем использовать по месту: font-family:G
+2. Сокращение псевдонимов названий анимаций @keyframes mymove { ... } = > @keyframes m { ... }
+3. Сокращение юникодов: \00000a => \A     L&#252;beck = L\FC beck
+4. Замена обрамляющих кавычек, если внутри используются такие же кавычки.
+   Например,  {content: " \"attr(href)\" "}  заменяется на {content: ' "attr(href)" '}
+
+Подстановки
+--------------------------------------------
+1. Замена длинных значений на эквивалентные им короткие:  border: none = border: 0,   bold = 700, normal = 400, from = 0%
+  perspective: none = perspective: 0
+2. Отсекание дефолтных свойств в сложных выражениях: border: solid 1px black = border: solid 1px
+3. linear-gradient:   ‘to top’, ‘to right’, ‘to bottom’, or ‘to left’ =>  ‘0deg’, ‘90deg’, ‘180deg’, or ‘270deg’  (https://www.w3.org/TR/css3-images/)
+Вот вариаты записи одного и того же градиента:
+linear-gradient(yellow, blue);
+linear-gradient(to bottom, yellow, blue);
+linear-gradient(180deg, yellow, blue);
+linear-gradient(to top, blue, yellow);
+linear-gradient(to bottom, yellow 0%, blue 100%);
+
+linear-gradient(135deg, yellow, blue);
+linear-gradient(-45deg, blue, yellow);
+
+Оптимизация комплексных свойств:
+--------------------------------------------
+1. Переходы       http://www.w3.org/TR/2012/WD-css3-transitions-20120403/#transition
+   div { transition-property: opacity, left, top, width; transition-duration: 2s, 1s, 2s, 1s; } = div { transition-property: opacity, left, top, width; transition-duration: 2s, 1s; }
+   transition: background-color ?s linear 0s; => transition: background-color ?s linear;
+2. Границы borders, border-radius (см. отдельную статью)
+3. Бэкграунды backgrounds
+4. Трансформации:  http://www.w3.org/TR/2012/WD-css3-transitions-20120403/#transition
+  {transform: translateX(10px) translateY(10px)} = {transform: translate(10px, 10px)}
+  {transform: scaleX(1.2) scaleY(1.2)} = {transform: scale(1.2, 1.2)}
+  {transform: skewX(1.2) skewY(1.2)} = {transform: skew(1.2, 1.2)}
+  {transform: matrix(...)} {transform: scale(...)}   смотри http://www.w3.org/TR/2012/WD-css3-transforms-20120228/#unmatrix
+  {transform: translateX(10px) translateY(10px) translateZ(10px)} = {transform: translate3d(10px, 10px, 10px)}
+  transform:translate(-10px,-20px) scale(2) rotate(45deg) translate(5px,10px) -> transform:matrix
+5.Замена нескольких одинаковых трансформаций (с одинаковыми параметрами) для разных свойств на all:
+  transition: width 1s .5s ease-in, height 1s .5s ease-in  --> transition: all 1s .5s ease-in;
+6. Анимации:       http://www.w3.org/TR/css3-animations/
+  @keyframes mymove { ... } = > @keyframes m { ... }
+  {animation-name:m;animation-duration:5s;animation-iteration-count:10;} до {animation:m 5s 10}
+
+
+Группировки
+--------------------------------------------
+1. Группировка составных свойств в одно (тоже, что и оптимизация комплексных свойств):
+   padding: 0, padding-left: 1em  до  padding 1em 0 0 0;
+   div { animation-name: m; animation-duration: 5s; animation-iteration-count: 10; } до div { animation: m 5s 10; }
+   border-color: red => border: red;
+2. Группировка @media-queries с одинаковыми выражениями
+   @media (max-width: 480px) { body {font-size: 12px;} }
+   ...
+   @media (max-width: 480px) { .container { padding: 1em; } }
+   --->
+   @media (max-width: 480px) { body {font-size: 12px;} .container { padding: 1em; } }
+3. Поиск одинаковых стилей у разных квалификаторов - объединение (нужно отслеживать семантику и возможное перекрытие)
+    .class1 { display: none; }
+    ...
+    .class2 { display: none; }
+    --->
+    .class1, .class2 { display: none; }
+4. Поиск повторяющихся больших блоков в стилях; вынос этих стилей в отдельное описание с объединением квалификаторов
+    .black { display: block; border: solid 1px; font-size: 12px; color: black; }
+    .red { display: block; border: solid 1px; font-size: 12px; color: red; }
+    .green { display: block; border: solid 1px; font-size: 12px; color: green; }
+    --->
+    .black, .red, .green { display: block; border: solid 1px; font-size: 12px; }
+    .black { color: black; } .red { color: red; } .green { color: green; }
+5. a, a, a { color: black } --->  a { color: black }
+   *, html, body { font-size: 12px }   ---> * { font-size: 12px }
+
+Специальные: Трансформации
+--------------------------------------------
+1. Поиск коротких эквивалентов  div[class~=value] = div.value     div[id=33] = div#33     *#id = #id     *.class = .class
+   * > a:first-child  => a:first-child
+   a:link {color:red}  => :link {color:red}
+   :nth-child(0n+5) => :nth-child(5)
+   :nth-child(n+0) => :nth-child(n)
+   :nth-child(1n+0) => :nth-child(n)
+   :nth-child(?n+0) => :nth-child(?n)
+   :nth-child(2n+1) => :nth-child(old)
+   :nth-child(2n+0) => :nth-child(even)
+
+
+Эврестические:
+о приоритетах селекторов  http://www.w3.org/wiki/CSS/Training/Priority_level_of_selector
+http://www.w3.org/TR/CSS21/cascade.html
+--------------------------------------------
+1. Сокращение длинных квалификаторов до более коротких (сокращение БЭМ методологии),
+   если они уникальны в пределах пространства имен свойств CSS и таблицы стилей (тут нужны еще другие таблицы стилей):
+   .snippet-name .wrapper .snippet-body .snippet-body-title  = (.snippet-name)? .snippet-body-title
+   Наличие предваряющего квалификатора зависит от его уникальности (т.е. он не повторяет уже существующие свойства)
+   Например есть два компонента:
+   .component1 .wrapper .element
+   .component2 .wrapper .element
+   Нельзя эти квалификаторы сократить до .element - они будут конфликтовать между собой.
+   Однако промежуточный .wrapper можно смело убрать. В итоге, получим сокращение:
+   .component1 .element
+   .component2 .element
+   Т.е. у нас остается квалификатор корня компонента, а остальные элементы внутри него идут без префиксов.
+   Такая проверка выполняется рекурсивно вниз по иерархии уже внутри компонента.
+2. Удаление стилей, которые формально переопределяют стили своих родителей, но не изменяют семантики:
+   .component { font-size: 12px; }
+   .component a { font-size: 12px; text-decoration: none; }
+   .component b { font-size: 12px; color: red; }
+   --->
+   .component { font-size: 12px; }
+   .component a { text-decoration: none; }
+   .component b { color: red; }
+3. По возможности, избавление от important, путем изменения порядка следования свойства в итоговом файле.
+   Такое часто случается, когда какое-либо свойство определяется в месте 1 (например a {color : #000}),
+   затем подключается некая библиотечная css, переопределяющая это свойство (например, на a {color: #46c}).
+   Поэтому есть два варианта:
+    а. использовать в первом случае !important,
+    б. поменять местами порядок описания стилей (сначало библиотечная, затем наша)
+4. Удаление откровенно ложных правил (при условии, что для них не используются переопределения и транзиции):
+    box-shadow: 2px 2px 2px inset rgba(0, 0, 0, 0);
+
+    p { font: normal 12pt sans-serif !important }
+    p { font-size: 24pt }  <--- удаление этого правила, поскольку оно игнорируется из-за первого; + !important в первом можно удалить
+
+    p { color: green; color: green; }
+    p { color: green; } <--- удаление дублирующего правила
+
+5. Удаление пустых свойств, типа: h2 { /*color: red;*/ }
+6. Поиск паттернов среди квалификаторов для свертки группы селекторов:
+   .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12{float:left}
+   [class^=col-xs-]{float:left}
+
+
+Экстремальные (HTML5 browsers only)
+--------------------------------------------
+1. Игнорирование/учет специфики CSS-хаков:    *zoom: 1, *width:
+2. Удаление префиксов браузеров  -webkit-, -o-, -moz-, -ms-
+
+Другие
+--------------------------------------------
+1. Сортировка свойств в алфавитном порядке для улучшения сжатия gzip
+
+
+Вспомогательные (полифилы) - *вообще-то это задача уже другого приложения (например less-компилятора)
+--------------------------------------------
+1. поиск свойств типа border-radius, linear-gradient и вставка браузеро-специфичных префиксов
+2. добавление IE свойств для стандартных opacity, linear-gradient, box-shadow, text-shadow, ...  (при возможности)

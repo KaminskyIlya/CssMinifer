@@ -1,0 +1,101 @@
+http://www.w3.org/TR/CSS2/
+http://www.w3.org/TR/2011/REC-CSS2-20110607/#minitoc
+
+============================================ CSS2
+Все свойства CSS2
+http://www.w3.org/TR/CSS2/propidx.html - все свойства (еще есть http://www.blooberry.com/indexdot/css/propindex/all.htm)
+http://www.w3.org/TR/CSS21/selector.html      http://www.w3.org/TR/css3-selectors/
+http://www.w3.org/TR/CSS21/cascade.html
+Кстати, согласно http://www.w3.org/TR/CSS21/syndata.html#declaration, точки с запятой, вне строк, могут быть написаны так \;
+что значит, что мы их должны не обрабатывать как разделитель свойств.
+Строки не могут содержать символ newline. Если нужен в строке символ переноса, необходимо его заменить на \A или \00000a
+Допускаются такие объявления:
+a[title="a not s\
+o very long title"] {/*...*/}
+a[title="a not so very long title"] {/*...*/}
+
+http://www.w3.org/TR/CSS21/generate.html
+
+a {color:red}
+a - is selector,  color:red - declaration,  color - property, red - value
+
+
+pseudo-elements is:
+::before  ::after ::first-letter  ::first-line
+
+Иерархия CSS-свойств:
+простые
+композитные (обычно через черту записываются)
+?браузеро-специфичные
+
+значения свойств могу быть:
+  - числовые: px, in, cm, em, vv, vh, vw, pt, %
+  - цветовые: #fff, #fda8b9, rgb, rgba, hsl, hsla
+  - строковые: Arial, Verdana, sans serif
+  - url:  url(...///), включая dataURI
+  - именованные константы: none, inherit, block, inline-block
+  - множественные: background-image: linear-gradient(...), linear-gradient(...)
+  - в виде выражений: url(), filter:progid:DXImageTransform.Microsoft.gradient(enabled=false)
+
+
+
+
+ @media { }
+ @font-face { <font-description> }
+ @keyframes
+ @import url('file.css') tv, print;    @import [ <url> | <string> ] <media-query-list>? ;
+ @charset 'utf8';
+
+
+ @page :left {}    @page :right {} @page :first {}  @page :blank {}
+ @counter footnote { list-style-type: super-decimal; }
+
+ не забыть про единицы времени
+
+ Angle Units: the <angle> type and deg, grad, rad, turn units
+ deg Degrees. There are 360 degrees in a full circle.
+ grad Gradians, also known as "gons" or "grades". There are 400 gradians in a full circle.
+ rad Radians. There are 2? radians in a full circle.
+ turn Turns. There is 1 turn in a full circle.
+
+ Duration Units: the <time> type and s, ms units
+
+
+@font-face { <font-description> }
+@keyframes name { pos{ value;value;... } }
+можно смешивать проценты 0% и ключевые слова to,from
+
+
+Важные ссылки по стандарту CSS3
+============================================
+Основы синтаксиса http://www.w3.org/TR/css-syntax-3/
+Селекторы         http://www.w3.org/TR/css3-selectors/
+Все про шрифты    http://www.w3.org/TR/css3-webfonts/
+                  http://www.w3.org/TR/css-fonts-3/
+Все про анимации  http://www.w3.org/TR/css3-animations/
+Единицы измерения http://www.w3.org/TR/css3-values/           (а также функция attr)
+Цвета             http://www.w3.org/TR/css3-color/
+Пространство имен http://www.w3.org/TR/css3-namespace/
+                  https://www.w3.org/TR/css3-images/
+                  http://www.w3.org/TR/css3-mediaqueries/     медиазапросы
+                  http://www.w3.org/TR/css3-conditional/      условия по атрибутам
+Стили для UI      http://www.w3.org/TR/css-ui-3/              (outline, nav-up, cursor, ...)
+                  http://www.w3.org/TR/css-counter-styles-3/  стили нумерованных списков (новый at-rule)
+                  http://www.w3.org/TR/css-flexbox-1/         флексбоксы
+                  http://www.w3.org/TR/css-masking-1/         маска изображений
+                  http://www.w3.org/TR/css-shapes-1/          изображения внутри текста с отбивкой по контурам
+                  http://www.w3.org/TR/css-writing-modes-3/   направление текста
+
+Важные ссылки по стандарту CSS2
+============================================
+Границы          http://www.w3.org/TR/CSS2/box.html#value-def-border-style
+Шрифты           http://www.w3.org/TR/CSS2/fonts.html
+
+Переходы (превращения)
+http://www.w3.org/TR/2012/WD-css3-transitions-20120403/
+
+Трансформации
+http://www.w3.org/TR/2012/WD-css3-transitions-20120403/#transition
+
+Все про медиазапросы
+@media type (query) { styles{} }
