@@ -88,9 +88,9 @@ public class CssQualifier extends AbstractSelector
             else if (processor.isInClassName())      processClassSelector(extractor);
             else if (processor.isInPseudoClass())    processPseudoExpression(extractor);
             else if (processor.isInAttr())           processAttributeSelector(extractor);
-            else if ( processor.isInWhitespace() )   processWhitespaces(extractor);
-            // Without any conjunctions!
-            else
+            else if (processor.isInWhitespace())     processWhitespaces(extractor);
+            else if (processor.isValid(reader.next()))            processSymbol(reader, processor);
+            else// if ( !processor.isValid() )
             {
                 throw new CssParsingException(String.format("Unrecognized part of selector %s at pos %d", selector, reader.getPos()), reader.getPos(), selector.length(), EExceptionLevel.ERROR);
             }
@@ -192,7 +192,7 @@ public class CssQualifier extends AbstractSelector
 
         try
         {
-            if (expression.toLowerCase().startsWith(":not("))
+            if (expression.toLowerCase().startsWith("not("))
             {
                 processNegation(expression);
             }
@@ -219,7 +219,7 @@ public class CssQualifier extends AbstractSelector
      */
     private void processNegation(String expression)
     {
-        String negation = expression.replaceFirst("^:not\\(", "").replaceFirst("\\)$", "");
+        String negation = expression.replaceFirst("^not\\(", "").replaceFirst("\\)$", "");
 
         // Check expression syntax
         if ( negation.length() < 2)

@@ -29,17 +29,17 @@ public class CssQualifierTest
     public Object[][] dataProvider_Analyze()
     {
         return new Object[][] {
-//                {"*", 0, 0, 0},
-//                {"LI", 0, 0, 1},
-//                {"LI.red.level", 0, 2, 1},
-//                {"LI.red", 0, 1, 1},
-//                {"*[REL=up]", 0, 1, 0},
-//                {"A[REL=up]", 0, 1, 1},
+                {"*", 0, 0, 0},
+                {"LI", 0, 0, 1},
+                {"LI.red.level", 0, 2, 1},
+                {"LI.red", 0, 1, 1},
+                {"*[REL=up]", 0, 1, 0},
+                {"A[REL=up]", 0, 1, 1},
                 {"A[REL=up][href]", 0, 2, 1},
                 {"A[REL=up][href].red.even", 0, 4, 1},
-//                {"#x34y", 1, 0, 0},
-//                {"#s12:not(FOO)", 1, 0, 1},
-//                {"#s12:nth-child(2n+1)", 1, 1, 0},
+                {"#x34y", 1, 0, 0},
+                {"#s12:not(FOO)", 1, 0, 1},
+                {"#s12:nth-child(2n+1)", 1, 1, 0},
         };
     }
 }

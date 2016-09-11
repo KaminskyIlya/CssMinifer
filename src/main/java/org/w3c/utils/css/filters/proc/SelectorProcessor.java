@@ -58,11 +58,41 @@ public class SelectorProcessor extends TextProcessor
         boolean in_brackets = isInParenthesis() || (current == ')');
 
         inAttr |= isNormal() && current == '[';
-        //inAttr |= inAttr && !isInString() && prevChar == ']';
 
         qualifier = !inBlock && !in_brackets && !inAttr && !isInString() && not("\r\n\f\t ", current);
-        if ( qualifier && in("+>~])},", current) ) qualifier = isEscaped();
+        if (qualifier && in("+>~])},", current)) qualifier = isEscaped();
         conjunction = in("\r\n\f\t +>~", current) && !inBlock && !isInString() && !inAttr && !isInParenthesis() && !qualifier;
+
+        tag = qualifier && !cls && !hash && !pseudo;
+
+        if ( in("#.:[", current) && isNormal() && !in_brackets )
+        {
+            cls = hash = pseudo = tag = false;
+        }
+
+        cls &= qualifier;
+        hash &= qualifier;
+        pseudo &= qualifier || in_brackets;
+
+
+        matcher = inAttr && in("=~^$*|", current);
+        wasMatcher |= matcher;
+        wasMatcher &= inAttr;
+
+        a_name |= !isInString() && inAttr;
+        a_name &= !wasMatcher && match("[\\w\\-]", current);
+        a_value = inAttr && wasMatcher && (isInString() || match("[\\w\\-'\"]", current)); //
+
+        expr = pseudo && in_brackets;
+    }
+
+    @Override
+    public void after(char current)
+    {
+        super.after(current);
+
+        inAttr &= !inBlock && current != ']'; // if attribute value selector ended?
+        wasMatcher &= inAttr;
 
         if (current == '.' && qualifier)
         {
@@ -77,32 +107,6 @@ public class SelectorProcessor extends TextProcessor
             pseudo = true; cls = false; hash = false;
         }
 
-
-        tag = qualifier && !cls && !hash && !pseudo;
-        cls &= qualifier;
-        hash &= qualifier;
-        pseudo &= qualifier || in_brackets;
-
-
-        matcher = inAttr && in("=~^$*|", current);
-        wasMatcher |= matcher;
-        wasMatcher &= inAttr;
-
-        a_name |= !isInString() && inAttr;
-        a_name &= !wasMatcher && match("[\\w\\-]", current);
-        a_value = inAttr && wasMatcher && (isInString() || match("[\\w\\-'\"]", current)); //
-        //a_value = inAttr && wasMatcher && ( inString || match("[\\w\\-]", current) || (wasString && isQuote(current)) ); // <-- for future, if errors will be discovered
-
-        expr = pseudo && in_brackets;
-    }
-
-    @Override
-    public void after(char current)
-    {
-        super.after(current);
-
-        inAttr &= !inBlock && current != ']'; // if attribute value selector ended?
-        wasMatcher &= inAttr;
 
         //if (cls && current == '.' && isNormal()) cls = false; // if class name is ended?
 
@@ -157,6 +161,11 @@ public class SelectorProcessor extends TextProcessor
     public boolean isInPseudoExpression()
     {
         return expr;
+    }
+
+    public boolean isValid(char next)
+    {
+        return in("*#.:[]()", next);
     }
 
 }
