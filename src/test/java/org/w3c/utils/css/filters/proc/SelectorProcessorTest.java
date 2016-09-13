@@ -194,19 +194,15 @@ public class SelectorProcessorTest
     @Test(dataProvider = "dataProvider_IsInClassName")
     public void testIsInClassName(String selector, String expectedFlags) throws Exception
     {
-        SelectorProcessor processor = new SelectorProcessor();
+        final SelectorProcessor processor = new SelectorProcessor();
 
-        for (int i = 0, n = selector.length(); i < n; i++)
+        TestHelpers.testFlowByBitmap("IsInClassName", selector, expectedFlags, processor, new TestBooleanMethod()
         {
-            char current = selector.charAt(i);
-            boolean expected = expectedFlags.charAt(i) == '1';
-
-            processor.before(current);
-            boolean actual = processor.isInClassName();
-            processor.after(current);
-
-            assertEquals(actual, expected, TestHelpers.getMessageFor("isInClassName", selector, i));
-        }
+            public boolean test()
+            {
+                return processor.isInClassName();
+            }
+        });
     }
 
     @DataProvider
