@@ -31,7 +31,8 @@ public class TestHelpers
         for (int i = 0, n = source.length(); i < n; i++)
         {
             char current = source.charAt(i);
-            boolean expected = bitmap.charAt(i) == '1';
+            char charAt = bitmap.charAt(i);
+            boolean expected = (charAt != ' ' && charAt != '0' && charAt != '\t');
 
             processor.before(current);
             boolean actual = method.test();

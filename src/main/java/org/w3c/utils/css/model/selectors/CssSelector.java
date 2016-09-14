@@ -21,7 +21,7 @@ import java.util.LinkedHashSet;
  */
 public class CssSelector extends AbstractSelector
 {
-    private Collection<CssQualifier> qualifiers = new LinkedHashSet<CssQualifier>();
+    private Collection<Qualifier> qualifiers = new LinkedHashSet<Qualifier>();
 
     public CssSelector(String selector)
     {
@@ -49,7 +49,7 @@ public class CssSelector extends AbstractSelector
 
     private void addQualifier(String token, char conjunction, int pos)
     {
-        CssQualifier qualifier = new CssQualifier(token);
+        Qualifier qualifier = new Qualifier(token);
         qualifier.setConjunction(conjunction);
         try
         {

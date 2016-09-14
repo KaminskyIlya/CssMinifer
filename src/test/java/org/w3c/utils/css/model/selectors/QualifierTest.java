@@ -9,13 +9,13 @@ import static org.testng.Assert.assertEquals;
 /**
  * Created by Home on 28.08.2016.
  */
-public class CssQualifierTest
+public class QualifierTest
 {
 
     @Test(dataProvider = "dataProvider_Analyze")
     public void testAnalyze(String selector, int a, int b, int c) throws Exception
     {
-        CssQualifier qualifier = new CssQualifier(selector);
+        Qualifier qualifier = new Qualifier(selector);
         qualifier.analyze();
 
         CssSelectorSpecificity specificity = qualifier.getSpecificity();

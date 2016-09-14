@@ -1,7 +1,7 @@
 package org.w3c.utils.css.model.selectors;
 
 import org.w3c.utils.css.filters.proc.FlowProcessorDetector;
-import org.w3c.utils.css.filters.proc.SelectorProcessor;
+import org.w3c.utils.css.filters.proc.QualifierProcessor;
 import org.w3c.utils.css.io.CharsReader;
 import org.w3c.utils.css.model.exceptions.CssParsingException;
 import org.w3c.utils.css.model.exceptions.EExceptionLevel;
@@ -21,7 +21,7 @@ import java.util.HashSet;
  *
  * Created by Home on 05.12.2015.
  */
-public class CssQualifier extends AbstractSelector
+public class Qualifier extends AbstractSelector
 {
     /**
      * Conjunction with previous qualifier in selector.
@@ -55,7 +55,7 @@ public class CssQualifier extends AbstractSelector
 
 
 
-    public CssQualifier(String qualifier)
+    public Qualifier(String qualifier)
     {
         this.selector = qualifier;
     }
@@ -77,27 +77,27 @@ public class CssQualifier extends AbstractSelector
      */
     void analyze()
     {
-        SelectorProcessor processor = new SelectorProcessor();
+        QualifierProcessor processor = new QualifierProcessor();
         CharsReader reader = new CharsReader(selector);
-        TokenExtractor<SelectorProcessor> extractor = new TokenExtractor<SelectorProcessor>(reader, processor);
+        TokenExtractor<QualifierProcessor> extractor = new TokenExtractor<QualifierProcessor>(reader, processor);
 
         while (reader.available())
         {
-            if (processor.isInTag())                 processTypeSelector(extractor);
-            else if (processor.isInHash())           processIdSelector(extractor);
-            else if (processor.isInClassName())      processClassSelector(extractor);
-            else if (processor.isInPseudoClass())    processPseudoExpression(extractor);
-            else if (processor.isInAttr())           processAttributeSelector(extractor);
-            else if (processor.isInWhitespace())     processWhitespaces(extractor);
+            if (processor.isInTag())                processTypeSelector(extractor);
+            else if (processor.isInHash())          processIdSelector(extractor);
+            else if (processor.isInClass())         processClassSelector(extractor);
+            else if (processor.isInPseudo())        processPseudoExpression(extractor);
+            else if (processor.isInAttr())          processAttributeSelector(extractor);
+            else if (processor.isInWhitespace())    processWhitespaces(extractor);
             else if (processor.isValid(reader.next()))            processSymbol(reader, processor);
-            else// if ( !processor.isValid() )
+            else
             {
                 throw new CssParsingException(String.format("Unrecognized part of selector %s at pos %d", selector, reader.getPos()), reader.getPos(), selector.length(), EExceptionLevel.ERROR);
             }
         }
     }
 
-    private void processWhitespaces(final TokenExtractor<SelectorProcessor> extractor)
+    private void processWhitespaces(final TokenExtractor<QualifierProcessor> extractor)
     {
         extractor.extractToken(new FlowProcessorDetector()
         {
@@ -108,7 +108,7 @@ public class CssQualifier extends AbstractSelector
         });
     }
 
-    private void processTypeSelector(final TokenExtractor<SelectorProcessor> extractor)
+    private void processTypeSelector(final TokenExtractor<QualifierProcessor> extractor)
     {
         String type = extractor.extractToken(new FlowProcessorDetector()
         {
@@ -121,7 +121,7 @@ public class CssQualifier extends AbstractSelector
         // TODO: analyze namespaces
     }
 
-    private void processIdSelector(final TokenExtractor<SelectorProcessor> extractor)
+    private void processIdSelector(final TokenExtractor<QualifierProcessor> extractor)
     {
         specificity.addIdSelector();
 
@@ -132,11 +132,10 @@ public class CssQualifier extends AbstractSelector
                 return extractor.getProcessor().isInHash();
             }
         });
-        // TODO: check hash syntax
         hashes.add(hash);
     }
 
-    private void processClassSelector(final TokenExtractor<SelectorProcessor> extractor)
+    private void processClassSelector(final TokenExtractor<QualifierProcessor> extractor)
     {
         specificity.addSelectorExplanation();
 
@@ -144,13 +143,13 @@ public class CssQualifier extends AbstractSelector
         {
             public boolean canProcess()
             {
-                return extractor.getProcessor().isInClassName();
+                return extractor.getProcessor().isInClass();
             }
         });
         classes.add(cls);
     }
 
-    private void processAttributeSelector(final TokenExtractor<SelectorProcessor> extractor)
+    private void processAttributeSelector(final TokenExtractor<QualifierProcessor> extractor)
     {
         specificity.addSelectorExplanation();
 
@@ -165,7 +164,6 @@ public class CssQualifier extends AbstractSelector
         });
 
         matcher = matcher.replaceFirst("^\\[", "").replaceFirst("\\]$", "");
-        // TODO: format check
 
         try
         {
@@ -178,7 +176,7 @@ public class CssQualifier extends AbstractSelector
         }
     }
 
-    private void processPseudoExpression(final TokenExtractor<SelectorProcessor> extractor)
+    private void processPseudoExpression(final TokenExtractor<QualifierProcessor> extractor)
     {
         int pos = extractor.getReader().getPos();
 
@@ -186,7 +184,7 @@ public class CssQualifier extends AbstractSelector
         {
             public boolean canProcess()
             {
-                return extractor.getProcessor().isInPseudoClass();
+                return extractor.getProcessor().isInPseudo();
             }
         });
 
@@ -210,7 +208,6 @@ public class CssQualifier extends AbstractSelector
     private void processPseudo(String expression)
     {
         specificity.addSelectorExplanation();
-        //TODO: need to check syntax
         pseudo.add(expression); // TODO: need make true model
     }
 
@@ -228,7 +225,7 @@ public class CssQualifier extends AbstractSelector
         }
 
         // Calculate included selector specificity
-        CssQualifier q = new CssQualifier(negation);
+        Qualifier q = new Qualifier(negation);
         q.analyze();
 
         // Adding included selector specificity to our specificity

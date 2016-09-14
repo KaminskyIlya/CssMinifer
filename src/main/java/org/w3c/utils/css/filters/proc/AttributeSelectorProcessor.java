@@ -1,5 +1,7 @@
 package org.w3c.utils.css.filters.proc;
 
+import org.w3c.utils.css.help.CharUtils;
+
 /**
  * Attribute matcher processor.
  * Used for parsing attribute selectors.
@@ -37,7 +39,9 @@ public class AttributeSelectorProcessor extends SimpleProcessor
         {
             inAttr = wasAttr = true;
         }
-        if (inAttr && inWhitespace) inAttr = false;
+        if ( inAttr && inWhitespace ) inAttr = false;
+
+        checkAttrSymbol(current);
 
 
         if (wasAttr && !wasMatcher && isNormal() && in("=*~|^$", current) )
@@ -54,6 +58,15 @@ public class AttributeSelectorProcessor extends SimpleProcessor
             inValue = wasValue = true;
         }
         if (inValue && inWhitespace) inValue = false;
+    }
+
+    public void checkAttrSymbol(char current)
+    {
+        if ( inAttr )
+        {
+            boolean valid = match("[_a-z0-9\\-]", current) || CharUtils.isNonASCII(current) || in("=*~|^$\\", current);
+            if ( !valid ) throw new IllegalStateException("Unexpected char");
+        }
     }
 
     public void after(char current)

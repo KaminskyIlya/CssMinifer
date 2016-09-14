@@ -7,19 +7,10 @@ package org.w3c.utils.css.filters.proc;
  *
  * Created by Home on 29.11.2015.
  */
-public class SelectorProcessor extends TextProcessor
+public class SelectorProcessor extends AdvancedProcessor
 {
-    private boolean conjunction; // we are between of names
+    private boolean conjunction; // we are between of qualifiers
     private boolean qualifier; // we are in a qualifier
-    private boolean tag; // we are in a tag
-    private boolean hash; // we are in ID hash
-    private boolean cls; // we are in a class
-    private boolean pseudo; // we are in a pseudo element
-    private boolean matcher; // we are in a attribute matcher ?= [name?="value"]
-    private boolean a_name; // we are in a name of attribute to match
-    private boolean a_value; // we are in value of attribute (in string)
-    private boolean expr; // we are in pseudo expression
-    private boolean wasMatcher;
 
     public SelectorProcessor()
     {
@@ -33,21 +24,6 @@ public class SelectorProcessor extends TextProcessor
 
         conjunction = false;
         qualifier = false;
-
-        // qualifier chunks
-        tag = false;
-        hash = false;
-        cls = false;
-        pseudo = false;
-
-        // inAttr []
-        matcher = false;
-        a_name = false;
-        a_value = false;
-        wasMatcher = false;
-
-        // inParenthesis ()
-        expr = false;
     }
 
     @Override
@@ -55,62 +31,14 @@ public class SelectorProcessor extends TextProcessor
     {
         super.before(current);
 
-        boolean in_brackets = isInParenthesis() || (current == ')');
-
-        inAttr |= isNormal() && current == '[';
-
-        qualifier = !inBlock && !in_brackets && !inAttr && !isInString() && not("\r\n\f\t ", current);
-        if (qualifier && in("+>~])},", current)) qualifier = isEscaped();
-        conjunction = in("\r\n\f\t +>~", current) && !inBlock && !isInString() && !inAttr && !isInParenthesis() && !qualifier;
-
-        tag = qualifier && !cls && !hash && !pseudo;
-
-        if ( in("#.:[", current) && isNormal() && !in_brackets )
-        {
-            cls = hash = pseudo = tag = false;
-        }
-
-        cls &= qualifier;
-        hash &= qualifier;
-        pseudo &= qualifier || in_brackets;
-
-
-        matcher = inAttr && in("=~^$*|", current);
-        wasMatcher |= matcher;
-        wasMatcher &= inAttr;
-
-        a_name |= !isInString() && inAttr;
-        a_name &= !wasMatcher && match("[\\w\\-]", current);
-        a_value = inAttr && wasMatcher && (isInString() || match("[\\w\\-'\"]", current)); //
-
-        expr = pseudo && in_brackets;
+        conjunction = (isInWhitespace() || in("+>~", current)) && isNormal() && isNotInAnyBlock();
+        qualifier = !conjunction || inAnyBlock();
     }
 
     @Override
     public void after(char current)
     {
         super.after(current);
-
-        inAttr &= !inBlock && current != ']'; // if attribute value selector ended?
-        wasMatcher &= inAttr;
-
-        if (current == '.' && qualifier)
-        {
-            cls = true; hash = false; pseudo = false;
-        }
-        if (current == '#' && qualifier)
-        {
-            hash = true; cls = false; pseudo = false;
-        }
-        if (current == ':' && qualifier)
-        {
-            pseudo = true; cls = false; hash = false;
-        }
-
-
-        //if (cls && current == '.' && isNormal()) cls = false; // if class name is ended?
-
-        if (current == 0) reset();
     }
 
     public boolean isInQualifier()
@@ -121,51 +49,6 @@ public class SelectorProcessor extends TextProcessor
     public boolean isInConjunction()
     {
         return conjunction;
-    }
-
-    public boolean isInTag()
-    {
-        return tag;
-    }
-
-    public boolean isInHash()
-    {
-        return hash;
-    }
-
-    public boolean isInClassName()
-    {
-        return cls;
-    }
-
-    public boolean isInPseudoClass()
-    {
-        return pseudo;
-    }
-
-    public boolean isInAttributeMatcher()
-    {
-        return matcher;
-    }
-
-    public boolean isInAttributeName()
-    {
-        return a_name;
-    }
-
-    public boolean isInAttributeValue()
-    {
-        return a_value;
-    }
-
-    public boolean isInPseudoExpression()
-    {
-        return expr;
-    }
-
-    public boolean isValid(char next)
-    {
-        return in("*#.:[]()", next);
     }
 
 }

@@ -64,7 +64,7 @@ public class TokenExtractor<T extends FlowProcessor>
     {
         reader.mark();
         processor.after(reader.read());
-        while ( true )
+        while ( reader.available() )
         {
             processor.before(reader.next());
             if ( !detector.canProcess() ) break;

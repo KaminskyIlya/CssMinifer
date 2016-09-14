@@ -30,14 +30,10 @@ public class AttributeSelectorProcessorTest {
         return new Object[][] {
                 {"   src  ^=  '/img/portal'   ",
                  "   111                      "},
-                {"   'src'  ^=  '/img/portal'   ",
-                 "   11111                      "},
-                {"   'sr c'  ^=  '/img/portal'   ",
-                 "   111111                      "},
-                {"   \"src\"  ^=  '/img/portal'   ",
-                  "   11111                      "},
-                {"   \"sr c\"  ^=  '/img/portal'   ",
-                  "   111111                      "},
+                {"   src  ^=  '/img/portal'   ",
+                 "   111                      "},
+                {"   s\\rc  ^=  '/img/portal'   ",
+                 "   1\\11                      "},
         };
     }
 
@@ -59,20 +55,34 @@ public class AttributeSelectorProcessorTest {
     private Object[][] dataProvider_IsInAttributeMatcher()
     {
         return new Object[][] {
-                {"src^=/img/",
-                 "   11     "},
-                {"   src  ^=  '/img/portal'   ",
-                 "        11                  "},
-                {"   src  ^=  '/img/portal'   ",
-                 "        11                  "},
-                {"   src  ^==  '/img/portal'   ",
-                 "        11                   "},
-                {"   'src'  ^=  '/img/portal'   ",
-                 "          11                  "},
-                {"   'sr c'  *=  '/img/portal'   ",
-                 "           11                  "},
-                {"   \"src\"  *=  '/img/portal'   ",
-                   "          11                  "},
+                {
+                        "src^=/img/",
+                        "   11     "
+                },
+                {
+                        "   src  ^=  '/img/portal'   ",
+                        "        11                  "
+                },
+                {
+                        "   src  ^=  '/img/portal'   ",
+                        "        11                  "
+                },
+                {
+                        "   src  ^==  '/img/portal'   ",
+                        "        11                   "
+                },
+                {
+                        "    src   ^=  '/img/portal'   ",
+                        "          11                  "
+                },
+                {
+                        "   src  *=  '/img/portal'   ",
+                        "        11                  "
+                },
+                {
+                        "   s\\rc  *=  '/img/portal'   ",
+                        "    \t    11                  "
+                },
         };
     }
 
@@ -100,18 +110,18 @@ public class AttributeSelectorProcessorTest {
                  "     11111  "},
                 {"   src  ^=  '/img/portal'   ",
                  "            1111111111111   "},
-                {"   src  ^=  '/img/portal'   ",
-                 "            1111111111111   "},
-                {"   'src'  ^=  '/img/portal'   ",
+                {"   src  ^=  /img/portal   ",
+                 "            11111111111   "},
+                {"    src   ^=  '/img/portal'   ",
                  "              1111111111111   "},
-                {"   'sr c'  ^=  '/img/  portal'   ",
+                {"    src    ^=  '/img/  portal'   ",
                  "               111111111111111   "},
-                {"   'sr c'  ^=  /img/  portal   ",
+                {"    src    ^=  /img/  portal   ",
                  "               11111           "},
-                {"   \"src\"  ^=  '/img/portal'   ",
-                   "              1111111111111   "},
-                {"   \"src\"  ^=  '/img/ portal'   ",
-                   "              11111111111111   "},
+                {"     src    ^=  '/img/\\ portal'   ",
+                 "                111111\\11111111   "},
+                {"   src  ^=  '/img/ portal'   ",
+                 "            11111111111111   "},
         };
     }
 }

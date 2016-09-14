@@ -90,7 +90,7 @@ public class CssSelectorsList
         @Override
         public boolean canProcess()
         {
-            return !(isInConjunction() || isInQualifier() || isInParenthesis() || isInAttr() || isInPseudoClass() || isInString() || isEscaped());
+            return !(isInConjunction() || isInQualifier());
         }
     }
 }

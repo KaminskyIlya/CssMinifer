@@ -1,19 +1,21 @@
 package org.w3c.utils.css.model.selectors;
 
 import org.w3c.utils.css.filters.proc.AttributeSelectorProcessor;
-import org.w3c.utils.css.filters.proc.FlowProcessor;
 import org.w3c.utils.css.filters.proc.FlowProcessorDetector;
 import org.w3c.utils.css.help.CharUtils;
 import org.w3c.utils.css.help.LangUtils;
 import org.w3c.utils.css.io.CharsReader;
-import org.w3c.utils.css.io.MarkableReader;
 import org.w3c.utils.css.model.exceptions.CssParsingException;
 import org.w3c.utils.css.model.exceptions.EExceptionLevel;
 import org.w3c.utils.css.model.processors.TokenExtractor;
 
+import java.util.regex.Pattern;
+
 
 /**
  * Attribute selector in single qualifier.
+ * See specifications at https://www.w3.org/TR/css3-selectors/#attribute-selectors
+ * and https://www.w3.org/TR/css3-selectors/#w3cselgrammar
  *
  * Created by Home on 05.12.2015.
  */
@@ -22,6 +24,8 @@ class AttributeSelector extends AbstractSelector
     private String attribute;
     private char matcher = 0;
     private String value;
+
+    private static final Pattern matcherPattern = Pattern.compile("[\\*~\\|\\^\\$]?=");
 
     /**
      * Build attribute matcher.
@@ -56,28 +60,31 @@ class AttributeSelector extends AbstractSelector
     {
         int pos = extractor.getReader().getPos();
 
-        attribute = extractor.extractToken(new FlowProcessorDetector()
+        try
         {
-            public boolean canProcess()
+            attribute = extractor.extractToken(new FlowProcessorDetector()
             {
-                return extractor.getProcessor().isInAttributeName();
-            }
-        });
-
-        if (attribute == null)
-            throw new CssParsingException("Name of attribute is empty in selector: " + selector, pos, EExceptionLevel.ERROR);
-
-        if ( CharUtils.isStringLiteralCanUnquoted(attribute) ) attribute = CharUtils.getUnquotedStringLiteral(attribute);
-        if ( attribute.isEmpty() )
-        {
-            throw new CssParsingException("Name of attribute is empty in selector: " + selector, pos, EExceptionLevel.ERROR);
+                public boolean canProcess()
+                {
+                    return extractor.getProcessor().isInAttributeName();
+                }
+            });
         }
+        catch (IllegalStateException e)
+        {
+            throw new CssParsingException(e.getMessage(), extractor.getReader().getPos(), EExceptionLevel.ERROR);
+        }
+
+        if (LangUtils.isNullable(attribute))
+            throw new CssParsingException("Name of attribute is empty in selector: " + selector, pos, EExceptionLevel.ERROR);
     }
 
 
 
     public void readMatcher(final TokenExtractor<AttributeSelectorProcessor> extractor)
     {
+        int pos = extractor.getReader().getPos();
+
         String m =  extractor.extractToken(new FlowProcessorDetector()
         {
             public boolean canProcess()
@@ -85,6 +92,9 @@ class AttributeSelector extends AbstractSelector
                 return extractor.getProcessor().isInAttributeMatcher();
             }
         });
+        if ( m != null && !matcherPattern.matcher(m).matches() )
+            throw new CssParsingException(String.format("Bad matcher format %s", m), pos, m.length(), EExceptionLevel.ERROR);
+
         matcher = m != null ? m.charAt(0) : 0;
     }
 
@@ -110,39 +120,6 @@ class AttributeSelector extends AbstractSelector
                 throw new CssParsingException("Attribute value is empty in selector: " + selector, pos, EExceptionLevel.ERROR);
         }
     }
-
-
-
-
-
-
-    private String extractToken(MarkableReader reader, FlowProcessor processor, FlowProcessorDetector extractor)
-    {
-        while (reader.available())
-        {
-            if ( extractor.canProcess() )
-            {
-                return extractThat(reader, processor, extractor);
-            }
-            processor.after(reader.read());
-            processor.before(reader.next());
-        }
-        return null;
-    }
-
-    private String extractThat(MarkableReader reader, FlowProcessor processor, FlowProcessorDetector extractor)
-    {
-        reader.mark();
-        processor.after(reader.read());
-        while ( true )
-        {
-            processor.before(reader.next());
-            if ( !extractor.canProcess() ) break;
-            processor.after(reader.read());
-        }
-        return reader.readMarked();
-    }
-
 
 
     /**
@@ -178,7 +155,7 @@ class AttributeSelector extends AbstractSelector
      */
     public boolean isClassMatcher()
     {
-        return matcher == '~' && attribute.equals("class");
+        return matcher == '~' && attribute.equalsIgnoreCase("class");
     }
 
     /**
@@ -186,7 +163,7 @@ class AttributeSelector extends AbstractSelector
      */
     public boolean isIdMatcher()
     {
-        return matcher == '=' && attribute.equals("id");
+        return matcher == '=' && attribute.equalsIgnoreCase("id");
     }
 
 

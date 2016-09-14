@@ -9,10 +9,10 @@ package org.w3c.utils.css.filters.proc;
  */
 public class QualifierProcessor extends AdvancedProcessor
 {
-    private boolean tag; // we are in a tag name or universal element (*) or namespace
-    private boolean hash; // we are in ID hash #
-    private boolean cls; // we are in a class .
-    private boolean pseudo; // we are in a pseudo element : and it's expression
+    private boolean tag; // we are in a tag name or universal element (*) or namespace|
+    private boolean hash; // we are in ID #hash
+    private boolean cls; // we are in a .class
+    private boolean pseudo; // we are in a :pseudo element and it's expression (an+b) or :not(qualifier)
     private boolean attr; // we are in attr expression []
 
     public QualifierProcessor()
@@ -32,31 +32,39 @@ public class QualifierProcessor extends AdvancedProcessor
     {
         super.before(current);
 
-        if ( !isInParenthesis() && in(".#:[", current) ) // break point for all items
+        if ( isNormal() ) // skip escaped and string symbols
         {
-            attr = (current == '['); // started attr block
-            tag = hash = cls = pseudo = false;
+            if ( !isInParenthesis() && in(".#:[({", current) ) // common break points for items
+            {
+                attr = (current == '['); // started attr block
+                if (current != '(') pseudo = false; // started expression in pseudo
+                tag = hash = cls = false;
+            }
+        }
+        if (current == 0)
+        {
+            tag = hash = cls = pseudo = attr = false;
         }
     }
 
     @Override
     public void after(char current)
     {
-        super.after(current);
-
         if ( isNormal() ) // skip escaped and string symbols
         {
             if ( !pseudo && attr && current == ']' ) attr = false; // finished attr block
 
-            if ( pseudo && current == ')' && getParenthesisLevel() == 0 ) pseudo = false;
+            if ( pseudo && current == ')' && getParenthesisLevel() == 0 ) pseudo = false; // finished pseudo expression
 
-            if ( !isInParenthesis() ) // we must not are in [], {} or ()
+            if ( isNotInAnyBlock() ) // we must not be in [], {} or ()
             {
                 if (current == '#') hash = true; // start hash
                 if (current == '.') cls = true; // start class
                 if (current == ':') pseudo = true; // start pseudo class
             }
         }
+
+        super.after(current);
     }
 
     public boolean isInTag()
@@ -77,5 +85,15 @@ public class QualifierProcessor extends AdvancedProcessor
     public boolean isInAttr()
     {
         return attr;
+    }
+
+    public boolean isInPseudo()
+    {
+        return pseudo;
+    }
+
+    public boolean isValid(char next)
+    {
+        return in("*#.:[]()", next);
     }
 }

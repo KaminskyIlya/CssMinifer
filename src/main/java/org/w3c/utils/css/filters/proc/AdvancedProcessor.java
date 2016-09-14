@@ -43,13 +43,14 @@ public class AdvancedProcessor extends SimpleProcessor
     @Override
     public void after(char current)
     {
-        super.after(current);
-
         if (current == ')' && isNormal()) countParenthesis--;
         if (current == '}' && isNormal()) countBrackets--;
         if (current == ']' && isNormal()) countSquaredBrackets--;
 
-        if (countParenthesis < 0 || countBrackets < 0 || countSquaredBrackets < 0) throw new IllegalStateException("Unexpected " + current);
+        if (isNormal() && (countParenthesis < 0 || countBrackets < 0 || countSquaredBrackets < 0))
+            throw new IllegalStateException("Unexpected " + current);
+
+        super.after(current);
     }
 
     public boolean isInParenthesis()
@@ -85,5 +86,10 @@ public class AdvancedProcessor extends SimpleProcessor
     public boolean isNotInAnyBlock()
     {
         return !isInBrackets() && !isInParenthesis() && !isInSquaredBrackets();
+    }
+
+    public boolean inAnyBlock()
+    {
+        return isInBrackets() || isInParenthesis() || isInSquaredBrackets();
     }
 }
