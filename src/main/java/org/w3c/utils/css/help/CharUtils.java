@@ -154,24 +154,4 @@ public final class CharUtils
     {
         return isLetter(c) || isDigit(c) || c == '/' || c == '.' || c == '_';
     }
-
-    /**
-     * Remove in css string literal all escaped new lines \n \r \f
-     * @param literal css string literal
-     * @return solid string
-     */
-    public static String getSolidCssStringLiteral(String literal)
-    {
-        return literal.replaceAll("\\\\([\\n\\r\\f]||(\\r\\n))", "");
-    }
-
-    public static String getUnquotedStringLiteral(String literal)
-    {
-        return literal.replaceFirst("^['|\"]", "").replaceFirst("['|\"]$", "");
-    }
-
-    public static boolean isStringLiteralCanUnquoted(String literal)
-    {
-        return !Pattern.compile("\\s").matcher(literal).find();
-    }
 }

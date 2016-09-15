@@ -1,12 +1,14 @@
 package org.w3c.utils.css.model.selectors;
 
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.w3c.utils.css.model.CssSelectorSpecificity;
-
-import static org.testng.Assert.assertEquals;
+import test.TestHelpers;
 
 /**
+ * Qualifier functional test.
+ *
  * Created by Home on 28.08.2016.
  */
 public class QualifierTest
@@ -20,9 +22,7 @@ public class QualifierTest
 
         CssSelectorSpecificity specificity = qualifier.getSpecificity();
 
-        assertEquals(specificity.countOfIdSelectors(), a, "A != " + a);
-        assertEquals(specificity.countOfSelectorExplanations(), b, "B != " + b);
-        assertEquals(specificity.countOfQualifiers(), c, "C != " + c);
+        TestHelpers.equalsSpecificity(specificity, a, b, c);
     }
 
     @DataProvider
@@ -40,6 +40,33 @@ public class QualifierTest
                 {"#x34y", 1, 0, 0},
                 {"#s12:not(FOO)", 1, 0, 1},
                 {"#s12:nth-child(2n+1)", 1, 1, 0},
+        };
+    }
+
+    @Test(dataProvider = "dataProvider_TypeAndNamespaces")
+    public void testTypeAndNamespaces(String css, String expectedNS, String expectedType) throws Exception
+    {
+        Qualifier qualifier = new Qualifier(css);
+        qualifier.analyze();
+
+        Assert.assertEquals(qualifier.getType(), expectedType);
+        Assert.assertEquals(qualifier.getNamespace(), expectedNS);
+
+    }
+    @DataProvider
+    public Object[][] dataProvider_TypeAndNamespaces()
+    {
+        return new Object[][]{
+                {"", "", "*"}, // empty qualifier
+                {"P", "", "P"}, // element only
+                {"SPAN", "", "SPAN"}, //
+                {"|DIV", "", "DIV"}, // element without a namespace
+                {"ns|P", "ns", "P"}, // element in namespace 'ns'
+                {"ns|*", "ns", "*"}, // namespace and universal element
+                {"*|DIV", "*", "DIV"}, // element in any namespace
+                {"*|*", "*", "*"}, // any element
+                {"*", "", "*"}, // any element without namespace
+                {"|*", "", "*"}, // any element without namespace
         };
     }
 }

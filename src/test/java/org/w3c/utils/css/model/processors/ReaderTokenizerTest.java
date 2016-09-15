@@ -13,6 +13,9 @@ import java.util.List;
 import static org.testng.Assert.assertEquals;
 
 /**
+ * ReaderTokenizer functional tests.
+ * TODO: test getLastDelimiter and more strings
+ *
  * Created by Home on 24.11.2015.
  */
 public class ReaderTokenizerTest

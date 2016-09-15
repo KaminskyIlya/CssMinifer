@@ -44,7 +44,7 @@ public class ReaderTokenizer
             processor.before(symbol);
             boolean canProcess = processor.canProcess();
             processor.after(symbol);
-            lastDelimiter = symbol;
+            lastDelimiter = source.available() ? symbol : 0;
 
 
             if (canProcess && delims.contains(symbol + "")) // we founded token
@@ -101,10 +101,8 @@ public class ReaderTokenizer
         return source.getPos();
     }
 
-    //TODO: test it
     public boolean available()
     {
         return source.available();
     }
-
 }

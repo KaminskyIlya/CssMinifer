@@ -1,7 +1,7 @@
 package org.w3c.utils.css.io;
 
 import org.w3c.utils.css.filters.StringTransformer;
-import org.w3c.utils.css.filters.proc.TextProcessor;
+import org.w3c.utils.css.filters.proc.FlowProcessor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 public class ProcessedBuffer
 {
-    private final TextProcessor processor;
+    private final FlowProcessor processor;
     private final RecycledCharBuffer buffer;
 
     /**
@@ -21,7 +21,7 @@ public class ProcessedBuffer
      * @param source
      * @param processor
      */
-    public ProcessedBuffer(RecycledCharBuffer source, TextProcessor processor)
+    public ProcessedBuffer(RecycledCharBuffer source, FlowProcessor processor)
     {
         this.buffer = source;
         this.processor = processor;

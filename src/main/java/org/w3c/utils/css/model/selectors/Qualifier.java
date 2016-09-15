@@ -2,6 +2,7 @@ package org.w3c.utils.css.model.selectors;
 
 import org.w3c.utils.css.filters.proc.FlowProcessorDetector;
 import org.w3c.utils.css.filters.proc.QualifierProcessor;
+import org.w3c.utils.css.help.StringUtils;
 import org.w3c.utils.css.io.CharsReader;
 import org.w3c.utils.css.model.exceptions.CssParsingException;
 import org.w3c.utils.css.model.exceptions.EExceptionLevel;
@@ -14,7 +15,6 @@ import java.util.HashSet;
  * Simple selectors group representation.
  * p.article:nth-child(even) - is a qualifier (single selector).
  * Qualifier group construct a css selector.
- * TODO: need test
  *
  * @See http://www.w3.org/TR/css3-selectors/#selectors
  * @See http://www.w3.org/TR/CSS2/selector.html#pattern-matching
@@ -28,6 +28,10 @@ public class Qualifier extends AbstractSelector
      * First qualifier has default conjunction ' ' (none)
      */
     private char conjunction = ' ';
+    /**
+     * No namespace (default)
+     */
+    private String namespace = "";
     /**
      * Qualifier type.
      * A, H1, DIV - is valid qualifier types.
@@ -49,9 +53,9 @@ public class Qualifier extends AbstractSelector
      */
     private Collection<String> pseudo = new HashSet<String>();
     /**
-     * Attribute matchers
+     * Attribute attributes
      */
-    private Collection<AttributeSelector> matchers = new HashSet<AttributeSelector>();
+    private Collection<AttributeSelector> attributes = new HashSet<AttributeSelector>();
 
 
 
@@ -68,6 +72,36 @@ public class Qualifier extends AbstractSelector
     public void setConjunction(char conjunction)
     {
         this.conjunction = conjunction;
+    }
+
+    public String getNamespace()
+    {
+        return namespace;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public Collection<String> getClasses()
+    {
+        return classes;
+    }
+
+    public Collection<String> getHashes()
+    {
+        return hashes;
+    }
+
+    public Collection<String> getPseudo()
+    {
+        return pseudo;
+    }
+
+    public Collection<AttributeSelector> getAttributes()
+    {
+        return attributes;
     }
 
     /**
@@ -110,21 +144,30 @@ public class Qualifier extends AbstractSelector
 
     private void processTypeSelector(final TokenExtractor<QualifierProcessor> extractor)
     {
-        String type = extractor.extractToken(new FlowProcessorDetector()
+        String identifier = extractor.extractToken(new FlowProcessorDetector()
         {
             public boolean canProcess()
             {
                 return extractor.getProcessor().isInTag();
             }
         });
+
+        int pos = StringUtils.findNotEscapedCharPos(identifier, '|');
+        if (pos >= 0)
+        {
+            namespace = identifier.substring(0, pos);
+            type = identifier.substring(pos + 1);
+        }
+        else
+        {
+            type = identifier;
+        }
+
         if ( !type.equals("*") ) specificity.addQualifier();
-        // TODO: analyze namespaces
     }
 
     private void processIdSelector(final TokenExtractor<QualifierProcessor> extractor)
     {
-        specificity.addIdSelector();
-
         String hash = extractor.extractToken(new FlowProcessorDetector()
         {
             public boolean canProcess()
@@ -132,13 +175,13 @@ public class Qualifier extends AbstractSelector
                 return extractor.getProcessor().isInHash();
             }
         });
+
         hashes.add(hash);
+        specificity.addIdSelector();
     }
 
     private void processClassSelector(final TokenExtractor<QualifierProcessor> extractor)
     {
-        specificity.addSelectorExplanation();
-
         String cls = extractor.extractToken(new FlowProcessorDetector()
         {
             public boolean canProcess()
@@ -146,13 +189,13 @@ public class Qualifier extends AbstractSelector
                 return extractor.getProcessor().isInClass();
             }
         });
+
         classes.add(cls);
+        specificity.addSelectorExplanation();
     }
 
     private void processAttributeSelector(final TokenExtractor<QualifierProcessor> extractor)
     {
-        specificity.addSelectorExplanation();
-
         int pos = extractor.getReader().getPos();
 
         String matcher = extractor.extractToken(new FlowProcessorDetector()
@@ -168,12 +211,14 @@ public class Qualifier extends AbstractSelector
         try
         {
             AttributeSelector selector = new AttributeSelector(matcher);
-            matchers.add(selector);
+            attributes.add(selector);
         }
         catch (CssParsingException e)
         {
             throw new CssParsingException(e.getMessage(), pos + e.getPosition(), e.getLevel());
         }
+
+        specificity.addSelectorExplanation();
     }
 
     private void processPseudoExpression(final TokenExtractor<QualifierProcessor> extractor)
@@ -231,9 +276,4 @@ public class Qualifier extends AbstractSelector
         // Adding included selector specificity to our specificity
         specificity.addSpecificity(q.getSpecificity());
     }
-
-
-
-
-
 }

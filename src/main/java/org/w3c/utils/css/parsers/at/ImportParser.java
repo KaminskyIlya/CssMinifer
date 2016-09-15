@@ -2,7 +2,7 @@ package org.w3c.utils.css.parsers.at;
 
 import org.w3c.utils.css.Reporter;
 import org.w3c.utils.css.help.AnyUtils;
-import org.w3c.utils.css.help.CharUtils;
+import org.w3c.utils.css.help.StringUtils;
 import org.w3c.utils.css.io.ByteStreamLoader;
 import org.w3c.utils.css.io.CssTextReader;
 import org.w3c.utils.css.model.CssPage;
@@ -50,7 +50,7 @@ public class ImportParser extends CssParser
         if (tokenizer.isStartString())
         {
             String literal = tokenizer.consumeString();
-            url = CharUtils.getUnquotedStringLiteral(literal);
+            url = StringUtils.getUnquotedStringLiteral(literal);
             if (url.isEmpty()) reportBadUrl(literal);
         }
         else if (tokenizer.isStartUrl())

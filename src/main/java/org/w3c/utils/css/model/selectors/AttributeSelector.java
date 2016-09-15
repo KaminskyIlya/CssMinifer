@@ -2,8 +2,8 @@ package org.w3c.utils.css.model.selectors;
 
 import org.w3c.utils.css.filters.proc.AttributeSelectorProcessor;
 import org.w3c.utils.css.filters.proc.FlowProcessorDetector;
-import org.w3c.utils.css.help.CharUtils;
 import org.w3c.utils.css.help.LangUtils;
+import org.w3c.utils.css.help.StringUtils;
 import org.w3c.utils.css.io.CharsReader;
 import org.w3c.utils.css.model.exceptions.CssParsingException;
 import org.w3c.utils.css.model.exceptions.EExceptionLevel;
@@ -114,7 +114,7 @@ class AttributeSelector extends AbstractSelector
 
         if (value != null)
         {
-            if ( CharUtils.isStringLiteralCanUnquoted(value) ) value = CharUtils.getUnquotedStringLiteral(value);
+            if ( StringUtils.isStringLiteralCanUnquoted(value) ) value = StringUtils.getUnquotedStringLiteral(value);
 
             if ( value.isEmpty() )
                 throw new CssParsingException("Attribute value is empty in selector: " + selector, pos, EExceptionLevel.ERROR);

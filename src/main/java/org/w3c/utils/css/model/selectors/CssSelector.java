@@ -33,15 +33,15 @@ public class CssSelector extends AbstractSelector
         ReaderTokenizer tokenizer = new ReaderTokenizer(new CharsReader(selector));
         FlowProcessor processor = new ConjunctionProcessor();
 
-        String token;
+        String qualifier;
         int pos = 0;
 
-        while ( (token = tokenizer.nextNotEmptyToken("\r\n\f\t +>~", processor)) != null )
+        while ( (qualifier = tokenizer.nextNotEmptyToken("\r\n\f\t +>~", processor)) != null )
         {
             char d = tokenizer.getLastDelimiter();
-            if (CharUtils.isWhiteSpace(d)) d = ' ';
+            if (CharUtils.isWhiteSpace(d) || d == 0) d = ' ';
 
-            addQualifier(token, d, pos);
+            addQualifier(qualifier.trim(), d, pos);
 
             pos = tokenizer.getPos();
         }
@@ -63,6 +63,10 @@ public class CssSelector extends AbstractSelector
         specificity.addSpecificity(qualifier.getSpecificity());
     }
 
+    public Collection<Qualifier> getQualifiers()
+    {
+        return qualifiers;
+    }
 
     private static class ConjunctionProcessor extends SelectorProcessor
     {

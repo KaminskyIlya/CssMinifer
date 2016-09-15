@@ -31,8 +31,8 @@ public class SelectorProcessor extends AdvancedProcessor
     {
         super.before(current);
 
-        conjunction = (isInWhitespace() || in("+>~", current)) && isNormal() && isNotInAnyBlock();
-        qualifier = !conjunction || inAnyBlock();
+        conjunction = in("+>~", current) && isNormal() && isNotInAnyBlock();
+        qualifier = (!isInWhitespace() && !conjunction) || inAnyBlock();
     }
 
     @Override

@@ -81,19 +81,19 @@ public class SelectorProcessorTest
         return new Object[][]{
                 {"*", " "},
                 {"* ~ H1 + P .selector#id > .wrapper > a:hover ~ p::before",
-                 " 111  111 1            111        111       111         "},
+                 "  1    1                1          1         1          "},
                 {"*.active",
                  "        "},
                 {".active ~ .wrapper > .prefix + DIV",
-                 "       111        111       111   "},
+                 "        1          1         1    "},
                 {".active.active + P:pseudo",
-                 "              111        "},
+                 "               1         "},
                 {"#hash-code.active",
                  "                 "},
                 {"#hash-code:nth-child(2n+1):not(:nth-child(3n))[href='test ~ > + for.class'].selected  >  div",
-                 "                                                                                    11111   "},
+                 "                                                                                      1     "},
                 {"html > body > p.article +  p.pages:first-line ~ span[ color ~= red ]",
-                 "    111    111         1111                  111                    "},
+                 "     1      1           1                     1                     "},
         };
     }
 

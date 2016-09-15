@@ -234,35 +234,6 @@ public class CharUtilsTest
         assertTrue(isNonASCII((char) 0x1081));
     }
 
-    @Test
-    public void testGetSolidCssStringLiteral() throws Exception
-    {
-        assertEquals(getSolidCssStringLiteral("test 1-line string"), "test 1-line string");
-        assertEquals(getSolidCssStringLiteral("test multi-line string\\\r next line"), "test multi-line string next line");
-        assertEquals(getSolidCssStringLiteral("test multi-line string\\\n next line"), "test multi-line string next line");
-        assertEquals(getSolidCssStringLiteral("test multi-line string\\\f next line"), "test multi-line string next line");
-        assertEquals(getSolidCssStringLiteral("test multi-line string\\\r\\\n next line"), "test multi-line string next line");
-        assertEquals(getSolidCssStringLiteral("test multi-line string\\\n\\\r next line"), "test multi-line string next line");
-        assertEquals(getSolidCssStringLiteral("test multi-line string\\\t next line"), "test multi-line string\t next line");
-    }
-
-    @Test(dataProvider = "dataProvider_getUnquotedStringLiteral")
-    public void testGetUnquotedStringLiteral(String literal, String expected) throws Exception
-    {
-        String actual = CharUtils.getUnquotedStringLiteral(literal);
-        assertEquals(actual, expected);
-    }
-
-    @DataProvider
-    public Object[][] dataProvider_getUnquotedStringLiteral()
-    {
-        return new Object[][] {
-                {"\"test\"", "test"},
-                {"'test'", "test"},
-                {"'te\"st'", "te\"st"},
-        };
-    }
-
     @Test(dataProvider = "dataProvider_isURLStartChar")
     public void testIsURLStartChar(String probe, boolean thisIsUrlChar) throws Exception
     {
@@ -290,28 +261,6 @@ public class CharUtilsTest
         assertEquals(CharUtils.isMacEOL('\r'), true);
         assertEquals(CharUtils.isMacEOL('\n'), false);
         assertEquals(CharUtils.isMacEOL('\f'), false);
-    }
-
-    @Test(dataProvider = "dataProvider_IsStringLiteralCanUnquoted")
-    public void testIsStringLiteralCanUnquoted(String literal, boolean canUnquoted) throws Exception
-    {
-        boolean actual = CharUtils.isStringLiteralCanUnquoted(literal);
-        assertEquals(actual, canUnquoted);
-    }
-
-    @DataProvider
-    public Object[][] dataProvider_IsStringLiteralCanUnquoted()
-    {
-        return new Object[][] {
-                {"\"test\"", true},
-                {"'test'", true},
-                {"'te st'", false},
-                {"'te st'", false},
-                {"'t\te st'", false},
-                {"'t\n\re st'", false},
-                {"'t\r\ne st'", false},
-                {"'t\r\fe st'", false},
-        };
     }
 
 }

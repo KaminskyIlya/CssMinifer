@@ -1,6 +1,7 @@
 package test;
 
 import org.w3c.utils.css.filters.proc.FlowProcessor;
+import org.w3c.utils.css.model.CssSelectorSpecificity;
 
 import java.util.Arrays;
 
@@ -18,7 +19,8 @@ public class TestHelpers
 
     public static String getMarker(int len)
     {
-        if (len <= 0) return "";
+        if (len < 0) return "";
+        //if (len == 0) return "^";
 
         char spaces[] = new char[len+1];
         Arrays.fill(spaces, ' ');
@@ -40,5 +42,12 @@ public class TestHelpers
 
             assertEquals(actual, expected, getMessageFor(methodName, source, i));
         }
+    }
+
+    public static void equalsSpecificity(CssSelectorSpecificity specificity, int a, int b, int c)
+    {
+        assertEquals(specificity.countOfIdSelectors(), a, "A != " + a);
+        assertEquals(specificity.countOfSelectorExplanations(), b, "B != " + b);
+        assertEquals(specificity.countOfQualifiers(), c, "C != " + c);
     }
 }
