@@ -62,11 +62,11 @@ public class QualifierTest
                 {"SPAN", "", "SPAN"}, //
                 {"|DIV", "", "DIV"}, // element without a namespace
                 {"ns|P", "ns", "P"}, // element in namespace 'ns'
-                {"ns|*", "ns", "*"}, // namespace and universal element
                 {"*|DIV", "*", "DIV"}, // element in any namespace
-                {"*|*", "*", "*"}, // any element
-                {"*", "", "*"}, // any element without namespace
-                {"|*", "", "*"}, // any element without namespace
+                {"ns|*", "ns", "*"}, // namespace and universal element
+                {"*|*", "*", "*"}, // all elements
+                {"|*", "", "*"}, // all elements without a namespace
+                {"*", "", "*"}, // any element without namespace = all elements
         };
     }
 }

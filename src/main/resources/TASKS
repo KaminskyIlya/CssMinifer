@@ -1,22 +1,40 @@
 Переписать ReaderTokenizer - работает неправильно для CssSelector
-Нужен похожий Tokenizer, но работающий на регулярке \s*[+~>]\s*
+Нужен похожий Tokenizer, но работающий на регулярке \s*[+~>*]\s*  учесть, что еще есть и * такой коньюнктор  (combinator)
 Либо добавить в него соответствующие методы (см. образец из org.w3c.utils.css.io.ProcessedBuffer#replaceAll)
 
-Дописать тесты для Qualifier - проверять получаемую модель;
+Дописать тесты для Qualifier - проверять получаемую модель; учесть, что имена атрибутов могут также иметь наймспейсы
 прогнать все спецификации CssSelector согласно документации.
+
+@namespace foo "http://www.example.com";
+[foo|att=val] { color: blue }
+[*|att] { color: yellow }
 
 Сделать модель для PseudoClass в Qualifier
 odd = 2n+1, 2n = even, 2n+0 = 2n, 0n+5 = 5, 1n+0 = n, -1n+0 = -n, ( -n+ 6 ) - valid, ( + 2n ) - invalid
 Выписать сюда все псевдоклассы.
 
 Без аргументов:
-:fist-child
-:last-child
-:before, :after
+dynamic   :link :visited :hover :active :focus
+:target
+:enabled :disabled :checked :indeterminate
+
+:root
+:fist-child     = :nth-child(1)
+:last-child     = :nth-last-child(1)
+:first-of-type  = ..
+:last-of-type   = ..
+:empty
+::before ::after :::first-letter ::first-line
 
 С аргументами
 :nth-child(an+b)
+:nth-last-child(an+b)
+:nth-last-of-type(an+b)
+:nth-of-type(an+b)
 :not(qualifier)
+:lang(fr-be)
+
+:not(:not(...)) is invalid //TODO: написать на это тест
 
 
 
