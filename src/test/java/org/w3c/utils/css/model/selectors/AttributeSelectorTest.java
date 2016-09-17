@@ -15,10 +15,11 @@ public class AttributeSelectorTest
 {
 
     @Test(dataProvider = "selectorSamples")
-    public void testSelectorAnalyze(String source, String name, char matcher, String value) throws Exception
+    public void testSelectorAnalyze(String source, String ns, String name, char matcher, String value) throws Exception
     {
         AttributeSelector tested = new AttributeSelector(source);
         assertEquals(tested.getSelector(), source);
+        assertEquals(tested.getNamespace(), ns);
         assertEquals(tested.getAttribute(), name);
         assertEquals(tested.getMatcher(), matcher);
         assertEquals(tested.getValue(), value);
@@ -28,29 +29,32 @@ public class AttributeSelectorTest
     private Object[][] selectorSamples()
     {
         return new Object[][] {
-                {"src^='/img/portal'", "src", '^', "/img/portal"},
-                {"src^=/img/portal", "src", '^', "/img/portal"},
-                {"  src  ^=  '/img/portal'   ", "src", '^', "/img/portal"},
-                {"align", "align", (char)0, null},
-                {"href", "href", (char)0, null},
-                {"   href   ", "href", (char)0, null},
-                {" href='a' ", "href", '=', "a"},
-                {" href='b'", "href", '=', "b"},
-                {"href='c' ", "href", '=', "c"},
-                {" href ='d' ", "href", '=', "d"},
-                {" href ^='e' ", "href", '^', "e"},
-                {" href^= 'f' ", "href", '^', "f"},
-                {" href^= g", "href", '^', "g"},
-                {" href*= g", "href", '*', "g"},
-                {" href|= g", "href", '|', "g"},
-                {" href~= 'g'", "href", '~', "g"},
-                {" href$= 'g'", "href", '$', "g"},
-                {" href ^= /img/icons/", "href", '^', "/img/icons/"},
-                {" href ^= /img/icons/ ", "href", '^', "/img/icons/"},
-                {" href ^= '/img/ icons/' ", "href", '^', "'/img/ icons/'"},
-                {" href ^= '/img/i\\'cons/' ", "href", '^', "/img/i\\'cons/"},
-                {"   href   ^=   '/img/ icons/'   ", "href", '^', "'/img/ icons/'"},
-                {"   href   ^=   '/img/i\\'cons/'   ", "href", '^', "/img/i\\'cons/"},
+                {"src^='/img/portal'", "", "src", '^', "/img/portal"},
+                {"|src~='/img/portal'", "", "src", '~', "/img/portal"},
+                {"*|src*='/img/portal'", "*", "src", '*', "/img/portal"},
+                {"foo|src|='/img/portal'", "foo", "src", '|', "/img/portal"},
+                {"src^=/img/portal", "", "src", '^', "/img/portal"},
+                {"  src  ^=  '/img/portal'   ", "", "src", '^', "/img/portal"},
+                {"align", "", "align", (char)0, null},
+                {"href", "", "href", (char)0, null},
+                {"   href   ", "", "href", (char)0, null},
+                {" href='a' ", "", "href", '=', "a"},
+                {" href='b'", "", "href", '=', "b"},
+                {"href='c' ", "", "href", '=', "c"},
+                {" href ='d' ", "", "href", '=', "d"},
+                {" href ^='e' ", "", "href", '^', "e"},
+                {" href^= 'f' ", "", "href", '^', "f"},
+                {" href^= g", "", "href", '^', "g"},
+                {" href*= g", "", "href", '*', "g"},
+                {" href|= g", "", "href", '|', "g"},
+                {" href~= 'g'", "", "href", '~', "g"},
+                {" href$= 'g'", "", "href", '$', "g"},
+                {" href ^= /img/icons/", "", "href", '^', "/img/icons/"},
+                {" href ^= /img/icons/ ", "", "href", '^', "/img/icons/"},
+                {" href ^= '/img/ icons/' ", "", "href", '^', "'/img/ icons/'"},
+                {" href ^= '/img/i\\'cons/' ", "", "href", '^', "/img/i\\'cons/"},
+                {"   href   ^=   '/img/ icons/'   ", "", "href", '^', "'/img/ icons/'"},
+                {"   href   ^=   '/img/i\\'cons/'   ", "", "href", '^', "/img/i\\'cons/"},
         };
     }
 
@@ -65,18 +69,18 @@ public class AttributeSelectorTest
     private Object[][] badSelectorSamples()
     {
         return new Object[][]{
-//                {"    "},
-//                {"src="},
-//                {"src ="},
-//                {"src = "},
-//                {"src*="},
-//                {"src *= "},
-                {"src * src"},
-//                {" href='"},
-//                {" href\\='"},
-//                {" href=   "},
-//                {" href=''  "},
-//                {" href =   ''  "},
+                {"    "},
+                {"src="},
+                {"src ="},
+                {"src = "},
+                {"src*="},
+                {"src *= "},
+//                {"src * src"}, //FIXME
+                {" href='"},
+                {" href\\='"},
+                {" href=   "},
+                {" href=''  "},
+                {" href =   ''  "},
         };
     }
 

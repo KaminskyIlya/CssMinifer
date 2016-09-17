@@ -9,23 +9,24 @@ import org.w3c.utils.css.help.CharUtils;
  *
  * Created by Home on 05.09.2016.
  */
-public class AttributeSelectorProcessor extends SimpleProcessor
+public class AttributeSelectorProcessor extends SimpleProcessor implements FlowProcessorEx
 {
     private boolean inAttr = false;  // if we are in attribute name of matcher now?
     private boolean inMatcher = false;  // if we are matcher sign now?
     private boolean inValue = false; // if we are in value of matcher now?
     private boolean wasAttr = false; // if attribute's name already processed or in processing now
     private boolean wasMatcher = false; // if matcher already processed or in processing now
+    private boolean doubleMatcher = false; // if matcher symbol is double: *= ^= ~= $= |=
     private boolean wasValue = false; // if value already processed or in processing now
 
     @Override
     public void reset() {
         super.reset();
         inAttr = inMatcher = inValue = false;
-        wasAttr = wasMatcher = wasValue = false;
+        wasAttr = wasMatcher = doubleMatcher = wasValue = false;
     }
 
-    public void before(char current)
+    public void before(char current, char next)
     {
         super.before(current);
 
@@ -43,18 +44,26 @@ public class AttributeSelectorProcessor extends SimpleProcessor
 
         checkAttrSymbol(current);
 
+        if ( !wasMatcher )
+        {
+            doubleMatcher = isNormal() && in("*|~^$", current) && next == '=';
+        }
 
-        if (wasAttr && !wasMatcher && isNormal() && in("=*~|^$", current) )
+        if (wasAttr && !wasMatcher && (doubleMatcher || current == '='))
         {
             inAttr = false;
             inMatcher = wasMatcher = true;
         }
-        inMatcher &= in("*~|^$", current) || ((current == '=') && prevChar != '=');
-
+        if (doubleMatcher)
+        {
+            inMatcher &= in("*|~^$", current) || (current == '=' && in("*|~^$", prevChar));
+        }
+        else
+            inMatcher &= current == '=';
 
         if (wasMatcher && !inMatcher && !wasValue && !inWhitespace)
         {
-            inMatcher = false;
+            inMatcher = doubleMatcher = false;
             inValue = wasValue = true;
         }
         if (inValue && inWhitespace) inValue = false;
@@ -69,7 +78,7 @@ public class AttributeSelectorProcessor extends SimpleProcessor
         }
     }
 
-    public void after(char current)
+    public void after(char current, char next)
     {
         super.after(current);
     }

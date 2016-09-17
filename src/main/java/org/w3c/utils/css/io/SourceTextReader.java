@@ -209,10 +209,16 @@ public class SourceTextReader implements MarkableReader
         return available() ? lines.size() - 1 : lines.size();
     }
 
+    @Deprecated
     public char getNextCharAt(int shiftPos)
     {
-        assert shiftPos >= 0;
-        return (pos + shiftPos < source.length()) ? source.charAt(pos + shiftPos) : 0;
+        return next(shiftPos);
+    }
+
+    public char next(int shift)
+    {
+        assert shift >= 0;
+        return (pos + shift < source.length()) ? source.charAt(pos + shift) : 0;
     }
 
     public String getCharset()

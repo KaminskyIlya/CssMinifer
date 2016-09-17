@@ -60,9 +60,9 @@ public class CssTextTokenizer
      */
     public boolean isStartNumber()
     {
-        char c1 = reader.getNextCharAt(0);
-        char c2 = reader.getNextCharAt(1);
-        char c3 = reader.getNextCharAt(2);
+        char c1 = reader.next(0);
+        char c2 = reader.next(1);
+        char c3 = reader.next(2);
 
         if ( CharUtils.isDigit(c1) ) return true;
 
@@ -83,8 +83,8 @@ public class CssTextTokenizer
      */
     public boolean isStartIdentifier()
     {
-        char c1 = reader.getNextCharAt(0);
-        char c2 = reader.getNextCharAt(1);
+        char c1 = reader.next(0);
+        char c2 = reader.next(1);
 
         return isNameStartCodePoint(c1) || c1 == '-' && isNameStartCodePoint(c2);
     }

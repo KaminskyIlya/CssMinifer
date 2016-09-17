@@ -20,6 +20,14 @@ public interface SymbolReader
     char next();
 
     /**
+     * Return char at some distance from current reader position.
+     *
+     * @param shift distance of char from current position
+     * @return char value or 0, if not more chars
+     */
+    char next(int shift);
+
+    /**
      *
      * @return source not being read fully?
      */

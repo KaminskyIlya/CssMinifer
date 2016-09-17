@@ -1,10 +1,5 @@
 package org.w3c.utils.css.io;
 
-import com.sun.istack.internal.NotNull;
-import org.w3c.utils.css.filters.StringTransformer;
-
-import java.util.regex.Pattern;
-
 /**
  * Recycled characters buffer. For the flow-line processing text with using a single buffer.
  *
@@ -42,6 +37,11 @@ public class RecycledCharBuffer implements SymbolReader
     public char next()
     {
         return read_index < size ? buffer.charAt(read_index) : 0;
+    }
+
+    public char next(int shift)
+    {
+        throw new UnsupportedOperationException("Not implemented yet!");
     }
 
     /**

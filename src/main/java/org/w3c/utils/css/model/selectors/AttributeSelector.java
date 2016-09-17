@@ -7,7 +7,7 @@ import org.w3c.utils.css.help.StringUtils;
 import org.w3c.utils.css.io.CharsReader;
 import org.w3c.utils.css.model.exceptions.CssParsingException;
 import org.w3c.utils.css.model.exceptions.EExceptionLevel;
-import org.w3c.utils.css.model.processors.TokenExtractor;
+import org.w3c.utils.css.model.processors.TokenExtractorEx;
 
 import java.util.regex.Pattern;
 
@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
  */
 class AttributeSelector extends AbstractSelector
 {
+    private String namespace = "";
     private String attribute;
     private char matcher = 0;
     private String value;
@@ -34,14 +35,14 @@ class AttributeSelector extends AbstractSelector
      */
     public AttributeSelector(String selector)
     {
-        if (LangUtils.isNullable(selector)) throw new CssParsingException("", 0, EExceptionLevel.ERROR);
+        if (LangUtils.isNullable(selector)) throw new CssParsingException("Empty attribute selector", 0, EExceptionLevel.ERROR);
 
         this.selector = selector;
 
 
         AttributeSelectorProcessor processor = new AttributeSelectorProcessor();
         CharsReader reader = new CharsReader(selector);
-        TokenExtractor<AttributeSelectorProcessor> extractor = new TokenExtractor<AttributeSelectorProcessor>(reader, processor);
+        TokenExtractorEx<AttributeSelectorProcessor> extractor = new TokenExtractorEx<AttributeSelectorProcessor>(reader, processor);
 
         readName(extractor);
         readMatcher(extractor);
@@ -56,7 +57,7 @@ class AttributeSelector extends AbstractSelector
 
 
 
-    public void readName(final TokenExtractor<AttributeSelectorProcessor> extractor)
+    public void readName(final TokenExtractorEx<AttributeSelectorProcessor> extractor)
     {
         int pos = extractor.getReader().getPos();
 
@@ -77,11 +78,18 @@ class AttributeSelector extends AbstractSelector
 
         if (LangUtils.isNullable(attribute))
             throw new CssParsingException("Name of attribute is empty in selector: " + selector, pos, EExceptionLevel.ERROR);
+
+        int n = StringUtils.findNotEscapedCharPos(attribute, '|');
+        if (n >= 0)
+        {
+            namespace = attribute.substring(0, n);
+            attribute = attribute.substring(n + 1);
+        }
     }
 
 
 
-    public void readMatcher(final TokenExtractor<AttributeSelectorProcessor> extractor)
+    public void readMatcher(final TokenExtractorEx<AttributeSelectorProcessor> extractor)
     {
         int pos = extractor.getReader().getPos();
 
@@ -100,7 +108,7 @@ class AttributeSelector extends AbstractSelector
 
 
 
-    public void readValue(final TokenExtractor<AttributeSelectorProcessor> extractor)
+    public void readValue(final TokenExtractorEx<AttributeSelectorProcessor> extractor)
     {
         int pos = extractor.getReader().getPos();
 
@@ -121,6 +129,15 @@ class AttributeSelector extends AbstractSelector
         }
     }
 
+
+    /**
+     *
+     * @return attribute namespace
+     */
+    public String getNamespace()
+    {
+        return namespace;
+    }
 
     /**
      *

@@ -34,6 +34,12 @@ public class CharsReader implements MarkableReader
         return available() ? source.charAt(pos) : 0;
     }
 
+    public char next(int shift)
+    {
+        assert shift >= 0;
+        return (pos + shift < source.length()) ? source.charAt(pos + shift) : 0;
+    }
+
     public boolean available()
     {
         return pos < source.length();

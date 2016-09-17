@@ -309,25 +309,25 @@ public class SourceTextReaderTest
     public void testGetNextCharAt() throws Exception
     {
         SourceTextReader reader = new SourceTextReader(data2);
-        assertEquals(reader.getNextCharAt(0), '.');
-        assertEquals(reader.getNextCharAt(1), 't');
-        assertEquals(reader.getNextCharAt(2), 'e');
-        assertEquals(reader.getNextCharAt(3), 's');
-        assertEquals(reader.getNextCharAt(4), 't');
-        assertEquals(reader.getNextCharAt(5), '\\');
-        assertEquals(reader.getNextCharAt(6), '{');
-        assertEquals(reader.getNextCharAt(7), '1');
-        assertEquals(reader.getNextCharAt(8), '5');
-        assertEquals(reader.getNextCharAt(9), '}');
-        assertEquals(reader.getNextCharAt(10), 0);
-        assertEquals(reader.getNextCharAt(11), 0);
+        assertEquals(reader.next(0), '.');
+        assertEquals(reader.next(1), 't');
+        assertEquals(reader.next(2), 'e');
+        assertEquals(reader.next(3), 's');
+        assertEquals(reader.next(4), 't');
+        assertEquals(reader.next(5), '\\');
+        assertEquals(reader.next(6), '{');
+        assertEquals(reader.next(7), '1');
+        assertEquals(reader.next(8), '5');
+        assertEquals(reader.next(9), '}');
+        assertEquals(reader.next(10), 0);
+        assertEquals(reader.next(11), 0);
     }
 
     @Test(expectedExceptions = AssertionError.class)
     public void testGetNextCharAt_WhenIndexBelowZero() throws Exception
     {
         SourceTextReader reader = new SourceTextReader(data2);
-        assertEquals(reader.getNextCharAt(-1), 0);
+        assertEquals(reader.next(-1), 0);
     }
 
     @Test

@@ -51,7 +51,7 @@ public class Qualifier extends AbstractSelector
     /**
      * All declared pseudo-classes.
      */
-    private Collection<String> pseudo = new HashSet<String>();
+    private Collection<PseudoSelector> pseudo = new HashSet<PseudoSelector>();
     /**
      * Attribute attributes
      */
@@ -94,7 +94,7 @@ public class Qualifier extends AbstractSelector
         return hashes;
     }
 
-    public Collection<String> getPseudo()
+    public Collection<PseudoSelector> getPseudo()
     {
         return pseudo;
     }
@@ -120,7 +120,7 @@ public class Qualifier extends AbstractSelector
             if (processor.isInTag())                processTypeSelector(extractor);
             else if (processor.isInHash())          processIdSelector(extractor);
             else if (processor.isInClass())         processClassSelector(extractor);
-            else if (processor.isInPseudo())        processPseudoExpression(extractor);
+            else if (processor.isInPseudo())        processPseudoClass(extractor);
             else if (processor.isInAttr())          processAttributeSelector(extractor);
             else if (processor.isInWhitespace())    processWhitespaces(extractor);
             else if (processor.isValid(reader.next()))            processSymbol(reader, processor);
@@ -221,7 +221,7 @@ public class Qualifier extends AbstractSelector
         specificity.addSelectorExplanation();
     }
 
-    private void processPseudoExpression(final TokenExtractor<QualifierProcessor> extractor)
+    private void processPseudoClass(final TokenExtractor<QualifierProcessor> extractor)
     {
         int pos = extractor.getReader().getPos();
 
@@ -233,47 +233,17 @@ public class Qualifier extends AbstractSelector
             }
         });
 
+        PseudoSelector pseudoClass = PseudoClassSelectorFactory.makePseudoSelectorFor(expression);
         try
         {
-            if (expression.toLowerCase().startsWith("not("))
-            {
-                processNegation(expression);
-            }
-            else
-            {
-                processPseudo(expression);
-            }
+            pseudoClass.analyze();
         }
         catch (CssParsingException e)
         {
             throw new CssParsingException(e.getMessage(), pos + e.getPosition(), e.getLevel());
         }
-    }
 
-    private void processPseudo(String expression)
-    {
-        specificity.addSelectorExplanation();
-        pseudo.add(expression); // TODO: need make true model
-    }
-
-    /**
-     * Calculates specificity for negate expression (for included selector)
-     */
-    private void processNegation(String expression)
-    {
-        String negation = expression.replaceFirst("^not\\(", "").replaceFirst("\\)$", "");
-
-        // Check expression syntax
-        if ( negation.length() < 2)
-        {
-            throw new CssParsingException("Empty negation in " + expression, 5, EExceptionLevel.ERROR);
-        }
-
-        // Calculate included selector specificity
-        Qualifier q = new Qualifier(negation);
-        q.analyze();
-
-        // Adding included selector specificity to our specificity
-        specificity.addSpecificity(q.getSpecificity());
+        specificity.addSpecificity(pseudoClass.getSpecificity());
+        pseudo.add(pseudoClass);
     }
 }

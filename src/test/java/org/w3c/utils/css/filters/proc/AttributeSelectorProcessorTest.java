@@ -17,7 +17,7 @@ public class AttributeSelectorProcessorTest {
     {
         final AttributeSelectorProcessor processor = new AttributeSelectorProcessor();
 
-        TestHelpers.testFlowByBitmap("isInAttributeName", text, flags, processor, new TestBooleanMethod() {
+        TestHelpers.testFlowByBitmapEx("isInAttributeName", text, flags, processor, new TestBooleanMethod() {
             public boolean test() {
                 return processor.isInAttributeName();
             }
@@ -28,6 +28,18 @@ public class AttributeSelectorProcessorTest {
     private Object[][] dataProvider_IsInAttributeName()
     {
         return new Object[][] {
+                {"   toto|src  ^=  '/img/portal'   ",
+                 "   11111111                      "},
+                {"   *|src  ^=  '/img/portal'   ",
+                 "   11111                      "},
+                {"   |src  ^=  '/img/portal'   ",
+                 "   1111                      "},
+                {"toto|src  ^=  '/img/portal'   ",
+                 "11111111                      "},
+                {"*|src  ^=  '/img/portal'   ",
+                 "11111                      "},
+                {"|src  ^=  '/img/portal'   ",
+                 "1111                      "},
                 {"   src  ^=  '/img/portal'   ",
                  "   111                      "},
                 {"   src  ^=  '/img/portal'   ",
@@ -44,7 +56,7 @@ public class AttributeSelectorProcessorTest {
     {
         final AttributeSelectorProcessor processor = new AttributeSelectorProcessor();
 
-        TestHelpers.testFlowByBitmap("isInAttributeMatcher", text, flags, processor, new TestBooleanMethod() {
+        TestHelpers.testFlowByBitmapEx("isInAttributeMatcher", text, flags, processor, new TestBooleanMethod() {
             public boolean test() {
                 return processor.isInAttributeMatcher();
             }
@@ -57,6 +69,14 @@ public class AttributeSelectorProcessorTest {
         return new Object[][] {
                 {
                         "src^=/img/",
+                        "   11     "
+                },
+                {
+                        "src*=/img/",
+                        "   11     "
+                },
+                {
+                        "src|=/img/",
                         "   11     "
                 },
                 {
@@ -80,6 +100,10 @@ public class AttributeSelectorProcessorTest {
                         "        11                  "
                 },
                 {
+                        "   src  |=  '/img/portal'   ",
+                        "        11                  "
+                },
+                {
                         "   s\\rc  *=  '/img/portal'   ",
                         "    \t    11                  "
                 },
@@ -91,7 +115,7 @@ public class AttributeSelectorProcessorTest {
     {
         final AttributeSelectorProcessor processor = new AttributeSelectorProcessor();
 
-        TestHelpers.testFlowByBitmap("isInAttributeValue", text, flags, processor, new TestBooleanMethod() {
+        TestHelpers.testFlowByBitmapEx("isInAttributeValue", text, flags, processor, new TestBooleanMethod() {
             public boolean test() {
                 return processor.isInAttributeValue();
             }
@@ -104,12 +128,12 @@ public class AttributeSelectorProcessorTest {
         return new Object[][] {
                 {" href=\" ",
                  "      11"},
-                {"src^=/img/",
-                 "     11111"},
-                {"src^=/img/  ",
-                 "     11111  "},
-                {"   src  ^=  '/img/portal'   ",
-                 "            1111111111111   "},
+                {"*|src^=/img/",
+                 "       11111"},
+                {"|src^=/img/  ",
+                 "      11111  "},
+                {"foo|src  ^=  '/img/portal'   ",
+                 "             1111111111111   "},
                 {"   src  ^=  /img/portal   ",
                  "            11111111111   "},
                 {"    src   ^=  '/img/portal'   ",
