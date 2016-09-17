@@ -14,8 +14,8 @@ import static test.TestHelpers.equalsSpecificity;
  */
 public class CssSelectorTest
 {
-    @Test(dataProvider = "dataProvider_TestModel")
-    public void testTestModel(String css, int q, int a, int b, int c) throws Exception
+    @Test(dataProvider = "dataProvider_TestSpecificity")
+    public void testTestSpecificity(String css, int q, int a, int b, int c) throws Exception
     {
         CssSelector selector = new CssSelector(css);
         selector.analyze();
@@ -25,10 +25,12 @@ public class CssSelectorTest
     }
 
     @DataProvider
-    private Object[][] dataProvider_TestModel()
+    private Object[][] dataProvider_TestSpecificity()
     {
         return new Object[][] {
                 {"p.article:nth-child(even) ~ font[color=\"red\"]", 2, 0, 3, 2},
+                {"* ~ H1 + P .selector#id > .wrapper > a:hover ~ p::before", 7, 1, 4, 4},
+                {"*   ~ H1 + P .selector#id   *   .wrapper > a:hover ~ p::before", 7, 1, 4, 4},
                 {"*", 1,                0, 0, 0},
                 {"LI", 1,               0, 0, 1},
                 {"UL LI", 2,            0, 0, 2},

@@ -1,9 +1,12 @@
 package org.w3c.utils.css.model.processors;
 
 import org.w3c.utils.css.filters.proc.FlowProcessor;
+import org.w3c.utils.css.io.CharsReader;
 import org.w3c.utils.css.io.MarkableReader;
 
 import java.io.Reader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Helper class for extractToken tokens in readers in flow.
@@ -12,16 +15,32 @@ import java.io.Reader;
  */
 public class ReaderTokenizer
 {
-    private final MarkableReader source;
-    private char lastDelimiter;
+    private final String source;
+    private final MarkableReader reader;
+
+    private Matcher matcher = null;
+    private char lastDelimiterChar = ' ';
+    private String lastDelimiterString = "";
 
     /**
-     * Create tokenized reader.
+     * Create tokenized reader for extract tokens by delimiter chars
      *
-     * @param source source of chars (<b>NOTE:</b> source must support the {@link Reader#mark} operation!)
+     * @param reader source of chars (<b>NOTE:</b> source must support the {@link Reader#mark} operation!)
      */
-    public ReaderTokenizer(MarkableReader source)
+    public ReaderTokenizer(MarkableReader reader)
     {
+        this.reader = reader;
+        this.source = null;
+    }
+
+    /**
+     * Create tokenized reader for extract tokens by regexp patterns.
+     *
+     * @param source
+     */
+    public ReaderTokenizer(String source)
+    {
+        this.reader = new CharsReader(source);
         this.source = source;
     }
 
@@ -36,38 +55,39 @@ public class ReaderTokenizer
      */
     public String nextToken(String delims, FlowProcessor processor)
     {
-        source.mark();
+        reader.mark();
+        lastDelimiterChar = ' ';
 
         char symbol;
-        while ((symbol = source.read()) != 0)
+        while ((symbol = reader.read()) != 0)
         {
             processor.before(symbol);
             boolean canProcess = processor.canProcess();
             processor.after(symbol);
-            lastDelimiter = source.available() ? symbol : 0;
+            lastDelimiterChar = symbol;
 
 
-            if (canProcess && delims.contains(symbol + "")) // we founded token
+            if ( canProcess && delims.indexOf((int)symbol) >= 0) // we founded token
             {
                 return extractToken(true);
             }
         }
 
-        // not founded (source is empty)
+        // not founded (reader is empty)
         return extractToken(false);
     }
 
 
     private String extractToken(boolean truncate)
     {
-        String token = source.readMarked();
+        String token = reader.readMarked();
 
         if (truncate)
         {
             if (!token.isEmpty()) token = token.substring(0, token.length()-1);
         }
 
-        return !token.isEmpty() ? token : null;
+        return token;
     }
 
 
@@ -84,25 +104,79 @@ public class ReaderTokenizer
         String s;
         do
         {
+            if ( !reader.available() ) return null;
             s = nextToken(delims, processor);
         }
-        while (s != null && s.isEmpty());
+        while ( s != null && s.isEmpty() );
 
         return s;
     }
 
-    public char getLastDelimiter()
+    /**
+     * Extract token by regexp pattern
+     *
+     * @param delimiter regexp pattern
+     * @param processor detector for valid delimiter
+     * @return read token or <b>null</b>, if no more tokens founded
+     */
+    public String nextToken(Pattern delimiter, FlowProcessor processor)
     {
-        return lastDelimiter;
+        if (matcher == null) matcher = delimiter.matcher(source);
+        lastDelimiterString = "";
+
+        int tokenStart = reader.getPos();
+        while ( reader.available() && matcher.find() )
+        {
+            moveBy(matcher.start(), processor); // moves to next delimiter
+            String token = source.substring(tokenStart, matcher.start());
+
+            moveBy(matcher.end(), processor); // skip founded delimiter
+            if ( !processor.canProcess() ) continue; // skip not correct delimiter
+
+            lastDelimiterString = source.substring(matcher.start(), matcher.end());
+
+            return token;
+        }
+        matcher = null;
+
+        if ( reader.available() )
+        {
+            reader.mark();
+            moveBy(source.length(), processor);
+            return reader.readMarked();
+        }
+        return null; // not founded
+    }
+
+    private void moveBy(int pos, FlowProcessor processor)
+    {
+        for (int i = reader.getPos(); i < pos; i++)
+        {
+            processor.before(reader.next());
+            processor.after(reader.read());
+        }
+    }
+
+    public char getLastDelimiterChar()
+    {
+        return lastDelimiterChar;
+    }
+
+    /**
+     * @return last delimiter string or empty
+     */
+    public String getLastDelimiterString()
+    {
+        return lastDelimiterString;
     }
 
     public int getPos()
     {
-        return source.getPos();
+        return reader.getPos();
     }
 
     public boolean available()
     {
-        return source.available();
+        return reader.available();
     }
 }

@@ -1,14 +1,15 @@
 package org.w3c.utils.css.model.selectors;
 
+import org.w3c.utils.css.filters.proc.CombinatorProcessor;
 import org.w3c.utils.css.filters.proc.FlowProcessor;
 import org.w3c.utils.css.filters.proc.SelectorProcessor;
-import org.w3c.utils.css.help.CharUtils;
-import org.w3c.utils.css.io.CharsReader;
-import org.w3c.utils.css.model.processors.ReaderTokenizer;
 import org.w3c.utils.css.model.exceptions.CssParsingException;
+import org.w3c.utils.css.model.exceptions.EExceptionLevel;
+import org.w3c.utils.css.model.processors.ReaderTokenizer;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.regex.Pattern;
 
 /**
  * Simple selectors group representation.
@@ -21,6 +22,8 @@ import java.util.LinkedHashSet;
  */
 public class CssSelector extends AbstractSelector
 {
+    private static final Pattern COMBINATORS = Pattern.compile(  "(\\s*[\\+~> ]\\s*)|( +\\* +)"  );
+
     private Collection<Qualifier> qualifiers = new LinkedHashSet<Qualifier>();
 
     public CssSelector(String selector)
@@ -30,16 +33,18 @@ public class CssSelector extends AbstractSelector
 
     public void analyze()
     {
-        ReaderTokenizer tokenizer = new ReaderTokenizer(new CharsReader(selector));
-        FlowProcessor processor = new ConjunctionProcessor();
+        ReaderTokenizer tokenizer = new ReaderTokenizer(selector);
+        FlowProcessor processor = new CombinatorProcessor();
 
         String qualifier;
         int pos = 0;
 
-        while ( (qualifier = tokenizer.nextNotEmptyToken("\r\n\f\t +>~", processor)) != null )
+        while ( (qualifier = tokenizer.nextToken(COMBINATORS, processor)) != null )
         {
-            char d = tokenizer.getLastDelimiter();
-            if (CharUtils.isWhiteSpace(d) || d == 0) d = ' ';
+            if (qualifier.isEmpty()) throw new CssParsingException("Bad selector " + selector, tokenizer.getPos(), EExceptionLevel.ERROR);
+
+            String s = tokenizer.getLastDelimiterString().trim();
+            char d = s.isEmpty() ? ' ' : s.charAt(0);
 
             addQualifier(qualifier.trim(), d, pos);
 
