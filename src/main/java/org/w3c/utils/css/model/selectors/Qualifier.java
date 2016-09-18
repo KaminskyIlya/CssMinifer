@@ -233,7 +233,7 @@ public class Qualifier extends AbstractSelector
             }
         });
 
-        PseudoSelector pseudoClass = PseudoClassSelectorFactory.makePseudoSelectorFor(expression);
+        PseudoSelector pseudoClass = PseudoClassSelectorFactory.makePseudoSelectorFor(expression.replaceFirst("^:", ""));
         try
         {
             pseudoClass.analyze();

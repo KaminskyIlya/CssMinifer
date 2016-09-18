@@ -31,7 +31,7 @@ public class OrderSelector extends PseudoSelector
     private void init()
     {
         int pos = selector.indexOf("(");
-        this.name = selector.substring(0, pos).trim();
+        this.name = selector.substring(0, pos).trim().toLowerCase();
         this.selector = selector.substring(pos+1, selector.length()-1).trim();
     }
 

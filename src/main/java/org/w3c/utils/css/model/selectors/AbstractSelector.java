@@ -29,18 +29,6 @@ abstract class AbstractSelector implements Selector
     }
 
     /**
-     *
-     * @param reader
-     * @param start
-     */
-//    protected void readSelector(CharsReader reader, int start)
-//    {
-//        reader.mark(reader.getPos() - start);
-//        selector = reader.readMarked();
-//        reader.skip(selector.length());
-//    }
-
-    /**
      * Process one symbol from reader.
      *
      * @param reader source symbols reader

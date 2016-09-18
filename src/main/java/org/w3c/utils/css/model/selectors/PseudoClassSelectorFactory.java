@@ -20,7 +20,6 @@ class PseudoClassSelectorFactory
             if ( name.startsWith("not") ) return new NegateSelector(expression);
             if ( "nth-child nth-last-child nth-of-type nth-last-of-type".contains(name) ) return new OrderSelector(expression);
         }
-        // for unrecognized pseudo selectors - build it simple (as is)
-        return new PseudoSelector(expression);
+        return new PseudoSelector(expression); // for unrecognized pseudo selectors - build it simple (as is)
     }
 }

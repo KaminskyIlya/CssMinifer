@@ -32,7 +32,7 @@ public class SelectorProcessor extends AdvancedProcessor
         super.before(current);
 
         conjunction = in("+>~", current) && isNormal() && isNotInAnyBlock();
-        qualifier = (!isInWhitespace() && !conjunction) || inAnyBlock();
+        qualifier = (!isInWhitespace() && !conjunction && current != ',') || inAnyBlock();
     }
 
     @Override

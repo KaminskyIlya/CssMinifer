@@ -20,7 +20,7 @@ public abstract class SimpleProcessor implements FlowProcessor
     private boolean inString = false; // if we are in string literal?
     private int escaped = 0; // count sequential of escaped chars
     protected boolean inWhitespace = false; // if we are in whitespace symbol?
-    private char curChar = 0; // current char
+    protected char curChar = 0; // current char
     protected char prevChar = 0; // previous char
 
     public void reset()

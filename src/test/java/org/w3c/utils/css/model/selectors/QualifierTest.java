@@ -1,10 +1,14 @@
 package org.w3c.utils.css.model.selectors;
 
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.w3c.utils.css.model.CssSelectorSpecificity;
 import test.TestHelpers;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Qualifier functional test.
@@ -14,19 +18,16 @@ import test.TestHelpers;
 public class QualifierTest
 {
 
-    @Test(dataProvider = "dataProvider_Analyze")
-    public void testAnalyze(String selector, int a, int b, int c) throws Exception
+    @Test(dataProvider = "dataProvider_Specificity")
+    public void testSpecificity(String selector, int a, int b, int c) throws Exception
     {
         Qualifier qualifier = new Qualifier(selector);
         qualifier.analyze();
-
-        CssSelectorSpecificity specificity = qualifier.getSpecificity();
-
-        TestHelpers.equalsSpecificity(specificity, a, b, c);
+        TestHelpers.equalsSpecificity(qualifier.getSpecificity(), a, b, c);
     }
 
     @DataProvider
-    public Object[][] dataProvider_Analyze()
+    public Object[][] dataProvider_Specificity()
     {
         return new Object[][] {
                 {"*", 0, 0, 0},
@@ -49,8 +50,8 @@ public class QualifierTest
         Qualifier qualifier = new Qualifier(css);
         qualifier.analyze();
 
-        Assert.assertEquals(qualifier.getType(), expectedType);
-        Assert.assertEquals(qualifier.getNamespace(), expectedNS);
+        assertEquals(qualifier.getType(), expectedType);
+        assertEquals(qualifier.getNamespace(), expectedNS);
 
     }
     @DataProvider
@@ -68,5 +69,33 @@ public class QualifierTest
                 {"|*", "", "*"}, // all elements without a namespace
                 {"*", "", "*"}, // any element without namespace = all elements
         };
+    }
+
+    @Test
+    public void testTestModel() throws Exception
+    {
+        Qualifier qualifier = new Qualifier("ns|P[aria-label].article.prolog:not(:first-child):hover");
+        qualifier.analyze();
+        assertEquals(qualifier.getNamespace(), "ns");
+        assertEquals(qualifier.getType(), "P");
+        assertEquals(qualifier.getAttributes().size(), 1);
+        for (AttributeSelector s : qualifier.getAttributes())
+        {
+            assertEquals(s.getAttribute(), "aria-label");
+        }
+        assertTrue(qualifier.getClasses().contains("article"));
+        assertTrue(qualifier.getClasses().contains("prolog"));
+        assertEquals(qualifier.getConjunction(), ' ');
+
+        List<PseudoSelector> list = new ArrayList<PseudoSelector>(qualifier.getPseudo());
+        assertEquals(list.get(0).getName(), "hover");
+        assertEquals(list.get(1).getName(), "not");
+        assertTrue(list.get(1) instanceof NegateSelector);
+
+        NegateSelector negate = (NegateSelector) list.get(1);
+        assertEquals(negate.getNegation().getPseudo().size(), 1);
+
+        list = new ArrayList<PseudoSelector>(negate.getNegation().getPseudo());
+        assertEquals(list.get(0).getName(), "first-child");
     }
 }

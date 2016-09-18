@@ -3,29 +3,30 @@ package org.w3c.utils.css.model.selectors;
 import org.w3c.utils.css.filters.proc.FlowProcessor;
 import org.w3c.utils.css.filters.proc.SelectorProcessor;
 import org.w3c.utils.css.io.CharsReader;
-import org.w3c.utils.css.model.processors.ReaderTokenizer;
 import org.w3c.utils.css.model.CssDeclarationsList;
 import org.w3c.utils.css.model.exceptions.CssParsingException;
+import org.w3c.utils.css.model.processors.ReaderTokenizer;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
- * CSS selector representation.
+ * CSS selectors list representation model.
  * p.article:nth-child(even) ~ font[color="red"], p.footer::first-line + span
- *
- * TODO: need test
- * нужно использовать powermock - который умеет подставлять свои классы.
- * самая главная задача тестирования - проверить, что класс CssSelector получает нужные строки,
- * и появляется в списке selectors; порядок их сохраняется
  *
  * Created by Home on 29.11.2015.
  */
 public class CssSelectorsList
 {
-    private Set<CssSelector> selectors = new LinkedHashSet<CssSelector>();
-    private Set<CssDeclarationsList> declarations = new LinkedHashSet<CssDeclarationsList>();
+    private Collection<CssSelector> selectors = new HashSet<CssSelector>();
+    private Collection<CssDeclarationsList> declarations = new LinkedHashSet<CssDeclarationsList>();
 
+    /**
+     * Build selector list model.
+     *
+     * @param selectorList css text with selectors
+     */
     public CssSelectorsList(String selectorList)
     {
         ReaderTokenizer tokenizer = new ReaderTokenizer(new CharsReader(selectorList));
@@ -41,7 +42,7 @@ public class CssSelectorsList
         }
     }
 
-    public void addSelector(String token, int pos)
+    private void addSelector(String token, int pos)
     {
         CssSelector selector = new CssSelector(token);
         try
@@ -55,12 +56,12 @@ public class CssSelectorsList
         selectors.add(selector);
     }
 
-    public Set<CssSelector> getSelectors()
+    public Collection<CssSelector> getSelectors()
     {
         return selectors;
     }
 
-    public Set<CssDeclarationsList> getDeclarations()
+    public Collection<CssDeclarationsList> getDeclarations()
     {
         return declarations;
     }
@@ -90,7 +91,7 @@ public class CssSelectorsList
         @Override
         public boolean canProcess()
         {
-            return !(isInConjunction() || isInQualifier());
+            return curChar == ',' && !(isInConjunction() || isInQualifier());
         }
     }
 }

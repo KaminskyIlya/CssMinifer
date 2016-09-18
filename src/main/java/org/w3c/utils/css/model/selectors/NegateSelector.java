@@ -27,7 +27,7 @@ public class NegateSelector extends PseudoSelector
 
     private void init()
     {
-        this.name = selector.substring(0, selector.indexOf("(")).trim();
+        this.name = selector.substring(0, selector.indexOf("(")).trim().toLowerCase();
     }
 
     public Qualifier getNegation()
@@ -59,16 +59,16 @@ public class NegateSelector extends PseudoSelector
         }
         catch (CssParsingException e)
         {
-            throw new CssParsingException(e.getMessage(), e.getPosition() + name.length(), e.getLength(), e.getLevel());
+            throw new CssParsingException(e.getMessage(), e.getPosition() + start, e.getLength(), e.getLevel());
         }
     }
 
     private void checkExpression(String expression, int start)
     {
         if (expression.isEmpty())
-            throw new CssParsingException("Empty negation in " + expression, 5, start, EExceptionLevel.ERROR);
+            throw new CssParsingException("Empty negation: " + selector, start, selector.length() - start - 1, EExceptionLevel.ERROR);
 
         if (expression.startsWith(":not"))
-            throw new CssParsingException("Forbidden recursive negation " + selector, start, selector.length() - start, EExceptionLevel.ERROR);
+            throw new CssParsingException("Forbidden recursive negation " + selector, start, selector.length() - start - 1, EExceptionLevel.ERROR);
     }
 }

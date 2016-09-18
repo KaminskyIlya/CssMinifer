@@ -13,7 +13,8 @@ public class PseudoSelector extends AbstractSelector
 
     public PseudoSelector(String selector)
     {
-        this.selector = this.name = selector.toLowerCase();
+        this.selector = selector;
+        this.name = selector.toLowerCase();
         this.specificity.addSelectorExplanation();
     }
 
