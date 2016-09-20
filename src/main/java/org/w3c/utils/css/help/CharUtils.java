@@ -154,4 +154,22 @@ public final class CharUtils
     {
         return isLetter(c) || isDigit(c) || c == '/' || c == '.' || c == '_';
     }
+
+    //TODO: test it
+    public static boolean isNmChar(char c)
+    {
+        return c == '-' || isNmStart(c);
+    }
+
+    //TODO: test it
+    public static boolean isNmStart(char c)
+    {
+        return isLetter(c) || isDigit(c) || isNonASCII(c) || c == '_';
+    }
+
+    //TODO: test it
+    public static boolean isIdentChar(char c)
+    {
+        return isNmChar(c);
+    }
 }

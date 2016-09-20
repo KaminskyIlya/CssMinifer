@@ -33,8 +33,8 @@ public class CssSelector extends AbstractSelector
 
     public void analyze()
     {
-        ReaderTokenizer tokenizer = new ReaderTokenizer(selector);
         FlowProcessor processor = new CombinatorProcessor();
+        ReaderTokenizer tokenizer = new ReaderTokenizer(selector);
 
         String qualifier;
         int pos = 0;

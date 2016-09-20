@@ -43,51 +43,79 @@ public class AdvancedProcessor extends SimpleProcessor
     @Override
     public void after(char current)
     {
-        if (current == ')' && isNormal()) countParenthesis--;
-        if (current == '}' && isNormal()) countBrackets--;
-        if (current == ']' && isNormal()) countSquaredBrackets--;
+        if ( isNormal() )
+        {
+            if (current == ')') countParenthesis--;
+            if (current == '}') countBrackets--;
+            if (current == ']') countSquaredBrackets--;
 
-        if (isNormal() && (countParenthesis < 0 || countBrackets < 0 || countSquaredBrackets < 0))
-            throw new IllegalStateException("Unexpected " + current);
+            if (countParenthesis < 0 || countBrackets < 0 || countSquaredBrackets < 0)
+                throw new IllegalStateException("Unexpected " + current);
+        }
 
         super.after(current);
     }
 
+    /**
+     * @return <b>true</b>, if we inside in a block ()
+     */
     public boolean isInParenthesis()
     {
         return countParenthesis > 0;
     }
 
+    /**
+     * @return <b>true</b>, if we inside in a block {}
+     */
     public boolean isInBrackets()
     {
         return countBrackets > 0;
     }
 
+    /**
+     * @return <b>true</b>, if we inside in a block []
+     */
     public boolean isInSquaredBrackets()
     {
         return countSquaredBrackets > 0;
     }
 
+    /**
+     * @return level of block ()
+     */
     public int getParenthesisLevel()
     {
         return countParenthesis;
     }
 
+    /**
+     * @return level of block {}
+     */
     public int getBracketsLevel()
     {
         return countBrackets;
     }
 
+    /**
+     * @return level of block []
+     */
     public int getSquaredBracketsLevel()
     {
         return countSquaredBrackets;
     }
 
+    /**
+     * @return <b>true</b>, if we outside of any block () {} []
+     */
     public boolean isNotInAnyBlock()
     {
         return !isInBrackets() && !isInParenthesis() && !isInSquaredBrackets();
     }
 
+    /**
+     * Sugar for
+     * @return <b>true</b>, if we inside of any block () {} []
+     */
     public boolean inAnyBlock()
     {
         return isInBrackets() || isInParenthesis() || isInSquaredBrackets();
