@@ -2,6 +2,7 @@ package org.w3c.utils.css.model.selectors;
 
 import org.w3c.utils.css.filters.proc.FlowProcessor;
 import org.w3c.utils.css.io.SymbolReader;
+import org.w3c.utils.css.model.CssModel;
 import org.w3c.utils.css.model.CssSelectorSpecificity;
 
 /**
@@ -9,7 +10,7 @@ import org.w3c.utils.css.model.CssSelectorSpecificity;
  *
  * Created by Home on 05.12.2015.
  */
-abstract class AbstractSelector implements Selector
+abstract class AbstractSelector implements Selector, CssModel
 {
     protected String selector;
     protected CssSelectorSpecificity specificity = new CssSelectorSpecificity();
