@@ -121,6 +121,11 @@ public class CssTextReader extends SourceTextReader
         read();
     }
 
+    public void skip(int count)
+    {
+        while (count-- > 0) skip();
+    }
+
     @Override
     public void mark()
     {

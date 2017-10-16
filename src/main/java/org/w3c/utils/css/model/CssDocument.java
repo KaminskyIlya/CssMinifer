@@ -29,6 +29,20 @@ public class CssDocument
         return page;
     }
 
+    public CssAnimation addAnimation(String name)
+    {
+        CssAnimation animation = new CssAnimation(name);
+        animations.add(animation);
+        return animation;
+    }
+
+    public CssFontFace addFont()
+    {
+        CssFontFace fontFace = new CssFontFace();
+        fonts.add(fontFace);
+        return fontFace;
+    }
+
     public List<CssPage> getPages()
     {
         return pages;

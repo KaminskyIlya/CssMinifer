@@ -19,9 +19,9 @@ public class SourceTextReaderTest
     private static final String data1 = "This is first line.\rThis is second line.\nThis is third line.\r\nThis is fourth line.";
     private static final String data2 = ".test\\{15}";
     private static final String data3 = "a\rb\nc\r\nd";
-    // 'ab_тест' в Window-1251 кодировке
+    // 'ab_С‚РµСЃС‚' РІ Window-1251 РєРѕРґРёСЂРѕРІРєРµ
     private static final byte test_win1251[] = {(byte)0x61, (byte)0x62, (byte)0x5f, (byte)0xf2, (byte)0xe5, (byte)0xf1, (byte)0xf2};
-    // 'ab_тест' в UTF-8 кодировке
+    // 'ab_С‚РµСЃС‚' РІ UTF-8 РєРѕРґРёСЂРѕРІРєРµ
     private static final byte test_utf8[] = {(byte)0x61, (byte)0x62, (byte)0x5f, (byte)0xd1, (byte)0x82, (byte)0xd0, (byte)0xb5, (byte)0xd1, (byte)0x81, (byte)0xd1, (byte)0x82};
 
 
@@ -349,7 +349,7 @@ public class SourceTextReaderTest
 
         reader.setCharset("Windows-1251");
         while (reader.available() && reader.getLine() != 2) reader.read();
-        assertEquals(reader.readMarked(), "ab_тест");
+        assertEquals(reader.readMarked(), "ab_С‚РµСЃС‚");
     }
 
     @Test
@@ -363,7 +363,7 @@ public class SourceTextReaderTest
 
         reader.setCharset("UTF-8");
         while (reader.available() && reader.getLine() != 2) reader.read();
-        assertEquals(reader.readMarked(), "ab_тест");
+        assertEquals(reader.readMarked(), "ab_С‚РµСЃС‚");
     }
 
     @Test(expectedExceptions = IllegalStateException.class)

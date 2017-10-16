@@ -72,7 +72,7 @@ public class SelectorsListParser extends CssParser
 
         tokenizer.skipWhitespace(true);
 
-        if ( !tokenizer.isStartBlock() )
+        if ( !tokenizer.isOpenBlock() )
         {
             if ( !tokenizer.isStartProperty() ) // declaration block {} not present
             {

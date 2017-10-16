@@ -10,18 +10,20 @@ import java.util.Map;
 
 /**
  * CSS animations block.
+ * '@keyframes' token model
  *
  * Created by Home on 21.08.2016.
- * @see  <a href="https://www.w3.org/TR/css-fonts-3/#at-font-face-rule">ront-face rule</a>
+ * @see  <a href="http://www.w3.org/TR/css3-animations/">animations</a>
   */
 public class CssAnimation extends AtRule
 {
     private Map<Integer, List<CssDeclaration>> keyframes = new HashMap<Integer, List<CssDeclaration>>(2);
     private String name;
 
-    public CssAnimation(String componentValue)
+    public CssAnimation(String name)
     {
-        super(componentValue);
+        super(name);
+        this.name = name;
     }
 
     @Override

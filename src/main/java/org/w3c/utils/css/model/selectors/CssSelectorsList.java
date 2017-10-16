@@ -4,6 +4,7 @@ import org.w3c.utils.css.filters.proc.FlowProcessor;
 import org.w3c.utils.css.filters.proc.SelectorProcessor;
 import org.w3c.utils.css.io.CharsReader;
 import org.w3c.utils.css.model.CssDeclarationsList;
+import org.w3c.utils.css.model.CssModel;
 import org.w3c.utils.css.model.exceptions.CssParsingException;
 import org.w3c.utils.css.model.processors.ReaderTokenizer;
 
@@ -17,10 +18,9 @@ import java.util.LinkedHashSet;
  *
  * Created by Home on 29.11.2015.
  */
-public class CssSelectorsList
+public class CssSelectorsList implements CssModel
 {
     private Collection<CssSelector> selectors = new HashSet<CssSelector>();
-    private Collection<CssDeclarationsList> declarations = new LinkedHashSet<CssDeclarationsList>();
 
     /**
      * Build selector list model.
@@ -59,11 +59,6 @@ public class CssSelectorsList
     public Collection<CssSelector> getSelectors()
     {
         return selectors;
-    }
-
-    public Collection<CssDeclarationsList> getDeclarations()
-    {
-        return declarations;
     }
 
     @Override

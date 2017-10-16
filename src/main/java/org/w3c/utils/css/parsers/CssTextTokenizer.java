@@ -6,6 +6,8 @@ import org.w3c.utils.css.io.CssTextReader;
 import org.w3c.utils.css.model.exceptions.CssTokenizerException;
 import org.w3c.utils.css.model.exceptions.EExceptionLevel;
 
+import java.util.regex.Matcher;
+
 /**
  * Css tokenizer.
  * Help to extractToken full css tokens.
@@ -18,6 +20,7 @@ public class CssTextTokenizer
 {
     private final CssTextReader reader;
     private boolean startProperty;
+    private boolean startHash;
 
     public CssTextTokenizer(CssTextReader reader)
     {
@@ -73,7 +76,7 @@ public class CssTextTokenizer
             if ( c2 == '.' && CharUtils.isDigit(c3) ) return true;
         }
 
-        return false;
+        return c1 == '.' && CharUtils.isDigit(c2);
     }
 
     /**
@@ -86,14 +89,14 @@ public class CssTextTokenizer
         char c1 = reader.next(0);
         char c2 = reader.next(1);
 
-        return isNameStartCodePoint(c1) || c1 == '-' && isNameStartCodePoint(c2);
+        return isNameStartCodePoint(c1) || (c1 == '-' && isNameStartCodePoint(c2));
     }
 
     public boolean isStartFunction()
     {
         if (isStartIdentifier())
         {
-            String name = consumeIdentifier();
+            consumeIdentifier();
             skipWhitespace(false);
             char next = reader.next();
             reader.reset();
@@ -109,6 +112,16 @@ public class CssTextTokenizer
     public boolean isStartAtRule()
     {
         return reader.next() == '@';
+    }
+
+    /**
+     * Test hash string (#ident)
+     *
+     * @return
+     */
+    public boolean isStartHash()
+    {
+        return reader.next() == '#';
     }
 
     public boolean isStartUrl()
@@ -127,14 +140,34 @@ public class CssTextTokenizer
         return (CharUtils.isLetter(n) || in("*|#.:[", n)) && !reader.isEscaped();
     }
 
-    public boolean isStartBlock()
+    public boolean isOpenBlock()
     {
         return reader.next() == '{' && !reader.isEscaped() && !reader.isInString();
     }
 
-    public boolean isEndBlock()
+    public boolean isOpenParentheses()
+    {
+        return reader.next() == '(' && !reader.isEscaped() && !reader.isInString();
+    }
+
+    public boolean isOpenBrackets()
+    {
+        return reader.next() == '[' && !reader.isEscaped() && !reader.isInString();
+    }
+
+    public boolean isClosedBlock()
     {
         return reader.next() == '}' && !reader.isEscaped() && !reader.isInString();
+    }
+
+    public boolean isClosedParentheses()
+    {
+        return reader.next() == ')' && !reader.isEscaped() && !reader.isInString();
+    }
+
+    public boolean isClosedBracket()
+    {
+        return reader.next() == ']' && !reader.isEscaped() && !reader.isInString();
     }
 
     public boolean isEndDeclaration()
@@ -202,7 +235,7 @@ public class CssTextTokenizer
     {
         consumeAtRuleHeader();
         if (isEndDeclaration()) reader.skip();
-        if (isStartBlock()) consumeDeclarationsBlock();
+        if (isOpenBlock()) consumeDeclarationsBlock();
     }
 
 
@@ -258,6 +291,8 @@ public class CssTextTokenizer
         return reader.readMarked();
     }
 
+    //FIXME: а нужен ли он? слишком сложный токен, отдается на откуп внешнему пользователю
+    @Deprecated
     public String consumeFunction()
     {
         reader.mark();
@@ -270,6 +305,7 @@ public class CssTextTokenizer
 
     /**
      * Consume a number.
+     *
      * Call this only after isStartNumber()
      * @See rules at https://www.w3.org/TR/css-syntax-3/#consume-a-number0
      * @return
@@ -283,9 +319,15 @@ public class CssTextTokenizer
         }
         String sample = reader.readMarked();
 
-        if ( NumericUtils.isNumber(sample) )
+        Matcher matcher = NumericUtils.FLOAT_NUMBER.matcher(sample);
+        if ( matcher.find() && matcher.start() == 0 )
         {
-            return sample;
+            int end = matcher.end();
+
+            reader.reset();
+            reader.skip(sample.length() - end);
+
+            return sample.substring(0, end);
         }
         else
         {
@@ -323,11 +365,23 @@ public class CssTextTokenizer
     public String consumeSelectorList()
     {
         reader.mark();
-        while ( reader.available() && !isStartBlock() )
+        while ( reader.available() && !isOpenBlock() )
         {
             reader.skip();
         }
         return reader.readMarked();
+    }
+
+    /**
+     * Consume hash token
+     *
+     * @return token value with # prefix
+     */
+    public String consumeHash()
+    {
+        reader.skip();
+
+        return "#" + consumeIdentifier();
     }
 
     public String consumeUrl()

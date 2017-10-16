@@ -21,9 +21,9 @@ public class CssFontFace extends AtRule
     private FontWeight fontWeight;
     private List<CssDeclaration> declarations = new ArrayList<CssDeclaration>();
 
-    public CssFontFace(String componentValue)
+    public CssFontFace()
     {
-        super(componentValue);
+        super(null);
     }
 
     @Override

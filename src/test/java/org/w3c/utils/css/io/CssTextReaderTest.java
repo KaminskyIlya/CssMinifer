@@ -25,6 +25,21 @@ public class CssTextReaderTest
         assertEquals(reader.read(), 'e');
     }
 
+    @Test
+    public void testSkipCount() throws Exception
+    {
+        CssTextReader reader = new CssTextReader("test<!-- DATA -->1-2 DATA -->me");
+
+        reader.skip(4);
+        assertEquals(reader.read(), ' ');
+
+        reader.skip(1);
+        assertEquals(reader.read(), '-');
+
+        reader.skip(3);
+        assertEquals(reader.read(), 'A');
+    }
+
     @Test(dataProvider = "dataProvider_read")
     public void testRead(String source, int skip, int read, String expected) throws Exception
     {

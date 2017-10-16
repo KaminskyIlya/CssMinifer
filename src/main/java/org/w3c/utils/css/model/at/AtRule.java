@@ -1,6 +1,7 @@
 package org.w3c.utils.css.model.at;
 
 import org.w3c.utils.css.enums.AtRules;
+import org.w3c.utils.css.model.CssModel;
 
 /**
  * At-rule prototype.
@@ -8,7 +9,7 @@ import org.w3c.utils.css.enums.AtRules;
  *
  * Created by Home on 20.11.2015.
  */
-public abstract class AtRule
+public abstract class AtRule implements CssModel
 {
     protected final String componentValue;
 

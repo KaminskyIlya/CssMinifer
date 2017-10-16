@@ -20,6 +20,7 @@ import java.util.*;
 public class CssPage extends Media
 {
     private Set<CssSelectorsList> selectors = new LinkedHashSet<CssSelectorsList>();
+    private Collection<CssDeclarationsList> declarations = new LinkedHashSet<CssDeclarationsList>();
 
     public CssPage()
     {
@@ -34,6 +35,11 @@ public class CssPage extends Media
     public Collection<CssSelectorsList> getSelectorsList()
     {
         return selectors;
+    }
+
+    public Collection<CssDeclarationsList> getDeclarations()
+    {
+        return declarations;
     }
 
     @Override

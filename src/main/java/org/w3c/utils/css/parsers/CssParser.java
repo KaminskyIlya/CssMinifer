@@ -2,10 +2,13 @@ package org.w3c.utils.css.parsers;
 
 import org.w3c.utils.css.io.CssTextReader;
 import org.w3c.utils.css.model.CssDocument;
+import org.w3c.utils.css.model.CssModel;
 import org.w3c.utils.css.model.CssPage;
 import org.w3c.utils.css.model.selectors.CssSelectorsList;
 
 /**
+ * Common prototype for all parsers.
+ *
  * Created by Home on 18.08.2016.
  */
 public abstract class CssParser
@@ -21,6 +24,11 @@ public abstract class CssParser
     }
 
     public abstract void parse();
+
+    public CssModel parseModel()
+    {
+        throw new UnsupportedOperationException();
+    }
 
     public CssDocument getModel()
     {

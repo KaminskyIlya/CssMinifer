@@ -83,6 +83,7 @@ public class CssDocumentParser extends CssParser
             }
         }
 
+        //TODO: создать специальный класс, он должен формировать сам такие сообщения (они все стандартизированы)
         Reporter reporter = new Reporter();
         reporter.setLevel(EExceptionLevel.ERROR);
         reporter.addMessage(String.format("Unrecognized token in line <%d> at <%d>:", start.getLine(), start.getCol()));
