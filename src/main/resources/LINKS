@@ -2,14 +2,14 @@ http://www.w3.org/TR/CSS2/
 http://www.w3.org/TR/2011/REC-CSS2-20110607/#minitoc
 
 ============================================ CSS2
-Все свойства CSS2
-http://www.w3.org/TR/CSS2/propidx.html - все свойства (еще есть http://www.blooberry.com/indexdot/css/propindex/all.htm)
+Р’СЃРµ СЃРІРѕР№СЃС‚РІР° CSS2
+http://www.w3.org/TR/CSS2/propidx.html - РІСЃРµ СЃРІРѕР№СЃС‚РІР° (РµС‰Рµ РµСЃС‚СЊ http://www.blooberry.com/indexdot/css/propindex/all.htm)
 http://www.w3.org/TR/CSS21/selector.html      http://www.w3.org/TR/css3-selectors/
 http://www.w3.org/TR/CSS21/cascade.html
-Кстати, согласно http://www.w3.org/TR/CSS21/syndata.html#declaration, точки с запятой, вне строк, могут быть написаны так \;
-что значит, что мы их должны не обрабатывать как разделитель свойств.
-Строки не могут содержать символ newline. Если нужен в строке символ переноса, необходимо его заменить на \A или \00000a
-Допускаются такие объявления:
+РљСЃС‚Р°С‚Рё, СЃРѕРіР»Р°СЃРЅРѕ http://www.w3.org/TR/CSS21/syndata.html#declaration, С‚РѕС‡РєРё СЃ Р·Р°РїСЏС‚РѕР№, РІРЅРµ СЃС‚СЂРѕРє, РјРѕРіСѓС‚ Р±С‹С‚СЊ РЅР°РїРёСЃР°РЅС‹ С‚Р°Рє \;
+С‡С‚Рѕ Р·РЅР°С‡РёС‚, С‡С‚Рѕ РјС‹ РёС… РґРѕР»Р¶РЅС‹ РЅРµ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ РєР°Рє СЂР°Р·РґРµР»РёС‚РµР»СЊ СЃРІРѕР№СЃС‚РІ.
+РЎС‚СЂРѕРєРё РЅРµ РјРѕРіСѓС‚ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРёРјРІРѕР» newline. Р•СЃР»Рё РЅСѓР¶РµРЅ РІ СЃС‚СЂРѕРєРµ СЃРёРјРІРѕР» РїРµСЂРµРЅРѕСЃР°, РЅРµРѕР±С…РѕРґРёРјРѕ РµРіРѕ Р·Р°РјРµРЅРёС‚СЊ РЅР° \A РёР»Рё \00000a
+Р”РѕРїСѓСЃРєР°СЋС‚СЃСЏ С‚Р°РєРёРµ РѕР±СЉСЏРІР»РµРЅРёСЏ:
 a[title="a not s\
 o very long title"] {/*...*/}
 a[title="a not so very long title"] {/*...*/}
@@ -23,19 +23,19 @@ a - is selector,  color:red - declaration,  color - property, red - value
 pseudo-elements is:
 ::before  ::after ::first-letter  ::first-line
 
-Иерархия CSS-свойств:
-простые
-композитные (обычно через черту записываются)
-?браузеро-специфичные
+РРµСЂР°СЂС…РёСЏ CSS-СЃРІРѕР№СЃС‚РІ:
+РїСЂРѕСЃС‚С‹Рµ
+РєРѕРјРїРѕР·РёС‚РЅС‹Рµ (РѕР±С‹С‡РЅРѕ С‡РµСЂРµР· С‡РµСЂС‚Сѓ Р·Р°РїРёСЃС‹РІР°СЋС‚СЃСЏ)
+?Р±СЂР°СѓР·РµСЂРѕ-СЃРїРµС†РёС„РёС‡РЅС‹Рµ
 
-значения свойств могу быть:
-  - числовые: px, in, cm, em, vv, vh, vw, pt, %
-  - цветовые: #fff, #fda8b9, rgb, rgba, hsl, hsla
-  - строковые: Arial, Verdana, sans serif
-  - url:  url(...///), включая dataURI
-  - именованные константы: none, inherit, block, inline-block
-  - множественные: background-image: linear-gradient(...), linear-gradient(...)
-  - в виде выражений: url(), filter:progid:DXImageTransform.Microsoft.gradient(enabled=false)
+Р·РЅР°С‡РµРЅРёСЏ СЃРІРѕР№СЃС‚РІ РјРѕРіСѓ Р±С‹С‚СЊ:
+  - С‡РёСЃР»РѕРІС‹Рµ: px, in, cm, em, vv, vh, vw, pt, %
+  - С†РІРµС‚РѕРІС‹Рµ: #fff, #fda8b9, rgb, rgba, hsl, hsla
+  - СЃС‚СЂРѕРєРѕРІС‹Рµ: Arial, Verdana, sans serif
+  - url:  url(...///), РІРєР»СЋС‡Р°СЏ dataURI
+  - РёРјРµРЅРѕРІР°РЅРЅС‹Рµ РєРѕРЅСЃС‚Р°РЅС‚С‹: none, inherit, block, inline-block
+  - РјРЅРѕР¶РµСЃС‚РІРµРЅРЅС‹Рµ: background-image: linear-gradient(...), linear-gradient(...)
+  - РІ РІРёРґРµ РІС‹СЂР°Р¶РµРЅРёР№: url(), filter:progid:DXImageTransform.Microsoft.gradient(enabled=false)
 
 
 
@@ -50,7 +50,7 @@ pseudo-elements is:
  @page :left {}    @page :right {} @page :first {}  @page :blank {}
  @counter footnote { list-style-type: super-decimal; }
 
- не забыть про единицы времени
+ РЅРµ Р·Р°Р±С‹С‚СЊ РїСЂРѕ РµРґРёРЅРёС†С‹ РІСЂРµРјРµРЅРё
 
  Angle Units: the <angle> type and deg, grad, rad, turn units
  deg Degrees. There are 360 degrees in a full circle.
@@ -63,39 +63,39 @@ pseudo-elements is:
 
 @font-face { <font-description> }
 @keyframes name { pos{ value;value;... } }
-можно смешивать проценты 0% и ключевые слова to,from
+РјРѕР¶РЅРѕ СЃРјРµС€РёРІР°С‚СЊ РїСЂРѕС†РµРЅС‚С‹ 0% Рё РєР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР° to,from
 
 
-Важные ссылки по стандарту CSS3
+Р’Р°Р¶РЅС‹Рµ СЃСЃС‹Р»РєРё РїРѕ СЃС‚Р°РЅРґР°СЂС‚Сѓ CSS3
 ============================================
-Основы синтаксиса http://www.w3.org/TR/css-syntax-3/
-Селекторы         http://www.w3.org/TR/css3-selectors/
-Все про шрифты    http://www.w3.org/TR/css3-webfonts/
+РћСЃРЅРѕРІС‹ СЃРёРЅС‚Р°РєСЃРёСЃР° http://www.w3.org/TR/css-syntax-3/
+РЎРµР»РµРєС‚РѕСЂС‹         http://www.w3.org/TR/css3-selectors/
+Р’СЃРµ РїСЂРѕ С€СЂРёС„С‚С‹    http://www.w3.org/TR/css3-webfonts/
                   http://www.w3.org/TR/css-fonts-3/
-Все про анимации  http://www.w3.org/TR/css3-animations/
-Единицы измерения http://www.w3.org/TR/css3-values/           (а также функция attr)
-Цвета             http://www.w3.org/TR/css3-color/
-Пространство имен http://www.w3.org/TR/css3-namespace/
+Р’СЃРµ РїСЂРѕ Р°РЅРёРјР°С†РёРё  http://www.w3.org/TR/css3-animations/
+Р•РґРёРЅРёС†С‹ РёР·РјРµСЂРµРЅРёСЏ http://www.w3.org/TR/css3-values/           (Р° С‚Р°РєР¶Рµ С„СѓРЅРєС†РёСЏ attr)
+Р¦РІРµС‚Р°             http://www.w3.org/TR/css3-color/
+РџСЂРѕСЃС‚СЂР°РЅСЃС‚РІРѕ РёРјРµРЅ http://www.w3.org/TR/css3-namespace/
                   https://www.w3.org/TR/css3-images/
-                  http://www.w3.org/TR/css3-mediaqueries/     медиазапросы
-                  http://www.w3.org/TR/css3-conditional/      условия по атрибутам
-Стили для UI      http://www.w3.org/TR/css-ui-3/              (outline, nav-up, cursor, ...)
-                  http://www.w3.org/TR/css-counter-styles-3/  стили нумерованных списков (новый at-rule)
-                  http://www.w3.org/TR/css-flexbox-1/         флексбоксы
-                  http://www.w3.org/TR/css-masking-1/         маска изображений
-                  http://www.w3.org/TR/css-shapes-1/          изображения внутри текста с отбивкой по контурам
-                  http://www.w3.org/TR/css-writing-modes-3/   направление текста
+                  http://www.w3.org/TR/css3-mediaqueries/     РјРµРґРёР°Р·Р°РїСЂРѕСЃС‹
+                  http://www.w3.org/TR/css3-conditional/      СѓСЃР»РѕРІРёСЏ РїРѕ Р°С‚СЂРёР±СѓС‚Р°Рј
+РЎС‚РёР»Рё РґР»СЏ UI      http://www.w3.org/TR/css-ui-3/              (outline, nav-up, cursor, ...)
+                  http://www.w3.org/TR/css-counter-styles-3/  СЃС‚РёР»Рё РЅСѓРјРµСЂРѕРІР°РЅРЅС‹С… СЃРїРёСЃРєРѕРІ (РЅРѕРІС‹Р№ at-rule)
+                  http://www.w3.org/TR/css-flexbox-1/         С„Р»РµРєСЃР±РѕРєСЃС‹
+                  http://www.w3.org/TR/css-masking-1/         РјР°СЃРєР° РёР·РѕР±СЂР°Р¶РµРЅРёР№
+                  http://www.w3.org/TR/css-shapes-1/          РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РІРЅСѓС‚СЂРё С‚РµРєСЃС‚Р° СЃ РѕС‚Р±РёРІРєРѕР№ РїРѕ РєРѕРЅС‚СѓСЂР°Рј
+                  http://www.w3.org/TR/css-writing-modes-3/   РЅР°РїСЂР°РІР»РµРЅРёРµ С‚РµРєСЃС‚Р°
 
-Важные ссылки по стандарту CSS2
+Р’Р°Р¶РЅС‹Рµ СЃСЃС‹Р»РєРё РїРѕ СЃС‚Р°РЅРґР°СЂС‚Сѓ CSS2
 ============================================
-Границы          http://www.w3.org/TR/CSS2/box.html#value-def-border-style
-Шрифты           http://www.w3.org/TR/CSS2/fonts.html
+Р“СЂР°РЅРёС†С‹          http://www.w3.org/TR/CSS2/box.html#value-def-border-style
+РЁСЂРёС„С‚С‹           http://www.w3.org/TR/CSS2/fonts.html
 
-Переходы (превращения)
+РџРµСЂРµС…РѕРґС‹ (РїСЂРµРІСЂР°С‰РµРЅРёСЏ)
 http://www.w3.org/TR/2012/WD-css3-transitions-20120403/
 
-Трансформации
+РўСЂР°РЅСЃС„РѕСЂРјР°С†РёРё
 http://www.w3.org/TR/2012/WD-css3-transitions-20120403/#transition
 
-Все про медиазапросы
+Р’СЃРµ РїСЂРѕ РјРµРґРёР°Р·Р°РїСЂРѕСЃС‹
 @media type (query) { styles{} }

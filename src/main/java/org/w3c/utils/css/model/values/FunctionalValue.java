@@ -1,21 +1,17 @@
 package org.w3c.utils.css.model.values;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Functional value of css property.
  * For example: url(image.jpg), linear-gradient(to top, yellow, red), translate(50%, 20%)
- * TODO: test it
+ * <p></p>
  * Created by k002 on 12.10.2017.
  */
 public class FunctionalValue extends BasicValue
 {
     private String name;
-    private List<Value> arguments;
+    private ComponentValue arguments;
 
     public FunctionalValue() {
-        arguments = new ArrayList<Value>();
     }
 
     public String getName() {
@@ -23,17 +19,17 @@ public class FunctionalValue extends BasicValue
     }
 
     public void setName(String name) {
-        assert name != null;
+        assert name != null && !name.isEmpty();
         this.name = name.toLowerCase();
     }
 
-    public List<Value> getArguments() {
+    public ComponentValue getArguments() {
         return arguments;
     }
 
-    public void addArgument(Value argument)
+    public void setArguments(ComponentValue arguments)
     {
-        arguments.add(argument);
+        this.arguments = arguments;
     }
 
     public String getText()
@@ -62,16 +58,6 @@ public class FunctionalValue extends BasicValue
     @Override
     public String toString()
     {
-        StringBuilder result = new StringBuilder(name).append('(');
-        boolean first = true;
-
-        for (Value argument : arguments)
-        {
-            if ( !first ) result.append(", ");
-            result.append(argument.getText());
-            first = false;
-        }
-
-        return result.append(')').toString();
+        return name + '(' + arguments.toString() + ')';
     }
 }

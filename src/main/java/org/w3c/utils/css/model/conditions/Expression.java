@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Выражение медиазапроса.
+ * Р’С‹СЂР°Р¶РµРЅРёРµ РјРµРґРёР°Р·Р°РїСЂРѕСЃР°.
  * and (min-width: 480px) and (max-width: 640px) and (color)
  *
  * Created by Home on 27.08.2016.

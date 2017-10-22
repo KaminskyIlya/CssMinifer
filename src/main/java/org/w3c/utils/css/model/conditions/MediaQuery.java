@@ -12,18 +12,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Медиа-запрос. Похоже это замена для класса Media.
+ * РњРµРґРёР°-Р·Р°РїСЂРѕСЃ. РџРѕС…РѕР¶Рµ СЌС‚Рѕ Р·Р°РјРµРЅР° РґР»СЏ РєР»Р°СЃСЃР° Media.
  * tv and (color), screen and (min-width: 1024px)
  * screen and (color), projection and (color)
  *
- * Выражение screen and (max-weight: 3kg) and (color), (color) можно сократить до screen and (max-weight: 3kg), (color)
+ * Р’С‹СЂР°Р¶РµРЅРёРµ screen and (max-weight: 3kg) and (color), (color) РјРѕР¶РЅРѕ СЃРѕРєСЂР°С‚РёС‚СЊ РґРѕ screen and (max-weight: 3kg), (color)
  *
  * Created by Home on 27.08.2016.
  */
 public class MediaQuery
 {
     private MediaPrefix prefix; // only, not
-    private String mediaType; // screen, tv, projection, aural  (лучше строка, т.к. идентификаторы могут быть разные)
+    private String mediaType; // screen, tv, projection, aural  (Р»СѓС‡С€Рµ СЃС‚СЂРѕРєР°, С‚.Рє. РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ РјРѕРіСѓС‚ Р±С‹С‚СЊ СЂР°Р·РЅС‹Рµ)
     private Set<Expression> expressions = new HashSet<Expression>();
 
     public MediaPrefix getPrefix()
@@ -52,10 +52,10 @@ public class MediaQuery
 
     public MediaQuery(String query)
     {
-        // лучше применить другую тактику: сделать токенизацию по пробелам
-        // пробелы не должны быть внутри скобок (). это единственное условие
-        // при этом у нас могут быть такие фразы: and(...) or(...)
-        // их уже можно обработать другим парсером
+        // Р»СѓС‡С€Рµ РїСЂРёРјРµРЅРёС‚СЊ РґСЂСѓРіСѓСЋ С‚Р°РєС‚РёРєСѓ: СЃРґРµР»Р°С‚СЊ С‚РѕРєРµРЅРёР·Р°С†РёСЋ РїРѕ РїСЂРѕР±РµР»Р°Рј
+        // РїСЂРѕР±РµР»С‹ РЅРµ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РІРЅСѓС‚СЂРё СЃРєРѕР±РѕРє (). СЌС‚Рѕ РµРґРёРЅСЃС‚РІРµРЅРЅРѕРµ СѓСЃР»РѕРІРёРµ
+        // РїСЂРё СЌС‚РѕРј Сѓ РЅР°СЃ РјРѕРіСѓС‚ Р±С‹С‚СЊ С‚Р°РєРёРµ С„СЂР°Р·С‹: and(...) or(...)
+        // РёС… СѓР¶Рµ РјРѕР¶РЅРѕ РѕР±СЂР°Р±РѕС‚Р°С‚СЊ РґСЂСѓРіРёРј РїР°СЂСЃРµСЂРѕРј
 
         MediaQueryProcessor processor = new MediaQueryProcessor();
         CharsReader reader = new CharsReader(query);

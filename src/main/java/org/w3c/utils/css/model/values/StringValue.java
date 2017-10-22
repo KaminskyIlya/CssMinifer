@@ -6,7 +6,7 @@ import org.w3c.utils.css.help.StringUtils;
  * String value of property.
  * For example, 'Times New Roman', 'attr(title)'.
  * Used in properties like as content, font-name.
- * TODO: test it
+ *
  * <p>
  *     See <a href="https://www.w3.org/TR/css-syntax-3/#string-token-diagram">string token</a>
  * </p>
@@ -32,7 +32,7 @@ public class StringValue extends BasicValue
      * @param value value with outer quotes
      */
     public void setValue(String value) {
-        assert value != null;
+        assert value != null && !value.isEmpty();
         this.value = value;
     }
 

@@ -3,8 +3,10 @@ package org.w3c.utils.css.model.values;
 /**
  * Keyword property value.
  * For example: 'inherit', 'solid', 'block', and etc.
- * TODO: test it
- * See <a href="https://www.w3.org/TR/css-syntax-3/#ident-token-diagram">Ident token</a>
+ *
+ * <p>
+ *  See <a href="https://www.w3.org/TR/css-syntax-3/#ident-token-diagram">Ident token</a>
+ * </p>
  * Created by k002 on 12.10.2017.
  */
 public class KeywordValue extends BasicValue
@@ -13,6 +15,7 @@ public class KeywordValue extends BasicValue
 
     public KeywordValue(String keyword)
     {
+        assert keyword != null;
         this.keyword = keyword;
     }
 
@@ -21,7 +24,8 @@ public class KeywordValue extends BasicValue
     }
 
     public void setKeyword(String keyword) {
-        this.keyword = keyword;
+        assert keyword != null;
+        this.keyword = keyword.toLowerCase();
     }
 
     /**
@@ -33,7 +37,7 @@ public class KeywordValue extends BasicValue
      */
     public boolean isPrefixed()
     {
-        return keyword.startsWith("-") || keyword.indexOf('-') <= 7;
+        return keyword.startsWith("-") || keyword.startsWith("prince-");
     }
 
     public String getText()

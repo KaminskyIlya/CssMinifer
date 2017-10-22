@@ -4,7 +4,7 @@ package org.w3c.utils.css.model.values;
  * Hashed value of property.
  * For example, #34f.
  * Used in properties like as color, background-color and another.
- * TODO: test it
+ *
  * <p>
  *     See <a href="https://www.w3.org/TR/css-syntax-3/#hash-token-diagram">hash token</a>
  * </p>
@@ -17,7 +17,7 @@ public class HashValue extends BasicValue
 
     public HashValue(String hash)
     {
-        this.hash = hash;
+        setHash(hash);
     }
 
     /**
@@ -32,7 +32,7 @@ public class HashValue extends BasicValue
      */
     public void setHash(String hash)
     {
-        assert hash != null;
+        assert hash != null && hash.startsWith("#");
         this.hash = hash;
     }
 

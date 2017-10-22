@@ -1,9 +1,11 @@
 package org.w3c.utils.css.model.values;
 
+import org.w3c.utils.css.help.NumericUtils;
+
 /**
  * Numeric value of property.
  * For example: 0, 1em, 50%, 6ch -.56e10mm, 3.1415rad
- * TODO: test it
+ *
  * <p>See <a href="https://www.w3.org/TR/css-syntax-3/#dimension-token-diagram">dimension token</a>,
  * <a href="https://www.w3.org/TR/css-syntax-3/#percentage-token-diagram">percentage token</a> and
  * <a href="https://www.w3.org/TR/css-syntax-3/#number-token-diagram">number token</a>.</p>
@@ -16,6 +18,12 @@ public class UnitValue extends BasicValue
     private String unit = "";
 
     public UnitValue() {
+    }
+
+    public UnitValue(Float value, String unit)
+    {
+        setUnit(unit);
+        setValue(value);
     }
 
     public Float getValue() {
@@ -62,6 +70,6 @@ public class UnitValue extends BasicValue
     @Override
     public String toString()
     {
-        return value + unit;
+        return NumericUtils.format(value) + unit;
     }
 }

@@ -1,4 +1,80 @@
-��� ����������:
+По медиа-запросам и условиям (допустимый формат):
+
+Для медиазапросов  https://www.w3.org/TR/css3-mediaqueries/#syntax:
+@media tv and (color), screen and (min-width: 1024px) and (max-width: 2048px), not projection, only aural
+@media (max-width: 960px)
+основные особенности:
+  - может быть префикс not|only
+  - указывается медиа-тип, который может быть идентификатором, причем совпадающим по началу с ключевыми словами not|only|and
+  - все выражения соединяются только конънктором and
+  - парсить легко: вначале разбить по запятым, затем по пробелам
+
+Для условных правил https://www.w3.org/TR/css3-conditional/#at-supports:
+все гораздо сложнее. они могут быть вложенными (см. group_rule_body и nested_statement)
+могут иметь бесконечное число скобок (см. supports_condition и supports_condition_in_parens)
+И еще, самое важное: медиа-запрос может быть выложен в условное правило.
+@supports ((display: flexbox) and (display: inline-box)) or (display: table) {...}
+
+основные особенности:
+  - не имеют префикса not|only
+  - не имеют медиа-типа
+  - могут быть вложенны один в другой
+  - условия могут группироваться в скобки сколько угодно раз (и это нужно оптимизировать)
+  - помимо конъюнкции and добавляются еще и not, or
+
+
+nested_statement
+  : ruleset | media | page | font_face_rule | keyframes_rule |
+    supports_rule
+  ;
+
+group_rule_body
+  : '{' S* nested_statement* '}' S*
+  ;
+
+
+supports_rule
+  : @supports S* supports_condition S* group_rule_body
+  ;
+
+supports_condition
+  : supports_negation | supports_conjunction | supports_disjunction |
+    supports_condition_in_parens
+  ;
+
+supports_condition_in_parens
+  : ( '(' S* supports_condition S* ')' ) | supports_declaration_condition |
+    general_enclosed
+  ;
+
+supports_negation
+  : NOT S+ supports_condition_in_parens
+  ;
+
+supports_conjunction
+  : supports_condition_in_parens ( S+ AND S+ supports_condition_in_parens )+
+  ;
+
+supports_disjunction
+  : supports_condition_in_parens ( S+ OR S+ supports_condition_in_parens )+
+  ;
+
+supports_declaration_condition
+  : '(' S* declaration ')'
+  ;
+
+general_enclosed
+  : ( FUNCTION | '(' ) ( any | unused )* ')'
+  ;
+
+declaration = property : value
+
+
+
+
+
+
+Без аргументов:
 dynamic   :link :visited :hover :active :focus
 :target
 :enabled :disabled :checked :indeterminate
@@ -13,7 +89,7 @@ odd = 2n+1, 2n = even, 2n+0 = 2n, 0n+5 = 5, 1n+0 = n, -1n+0 = -n
 :empty
 ::before ::after :::first-letter ::first-line
 
-� �����������
+С аргументами
 :nth-child(an+b)
 :nth-last-child(an+b)
 :nth-last-of-type(an+b)
@@ -21,13 +97,15 @@ odd = 2n+1, 2n = even, 2n+0 = 2n, 0n+5 = 5, 1n+0 = n, -1n+0 = -n
 :not(qualifier)
 :lang(fr-be)
 
-"�����������" ����� ����:
-  ����������� �������  /* */  <!-- -->
-  ����������� �������� //
-  ������, ������
+"Проблемными" могут быть:
+  комментарии блочные  /* */  <!-- -->
+  комментарии строчные //
+  строки, ссылки
   dataURI
-  �������  (calc, linear-gradient, filter, attr, rgba, hsl, ...)
-  ��������� ( '(' attr(href) ')' )
-  ��������� (a + p > h1:active ~ em)
-  �����-������� (@media screen and (max-width: 1024px))
-  ������� ( @supports ( display: flexbox ) or ( box-shadow: 2px 2px 2px black ) )
+  функции  (calc, linear-gradient, filter, attr, rgba, hsl, ...)
+  выражения ( '(' attr(href) ')' )
+  селекторы (a + p > h1:active ~ em)
+  медиа-запросы (@media screen and (max-width: 1024px))
+  условия ( @supports ( display: flexbox ) or ( box-shadow: 2px 2px 2px black ) )
+
+

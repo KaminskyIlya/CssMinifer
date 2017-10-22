@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Component value of css property. May be a single token, or a token group, or groups list.
- * TODO: test it
+ * TODO: Strong test all methods
  * <p>
  *     See <a href="https://www.w3.org/TR/css-syntax-3/#component-value">component value</a>
  * </p>
@@ -31,7 +31,7 @@ public class ComponentValue implements CssModel
      */
     public void beginNewValuesGroup()
     {
-        assert !activeGroup.isEmpty();
+        assert activeGroup == null || !activeGroup.isEmpty();
 
         activeGroup = new ArrayList<Value>();
         groups.add(activeGroup);
@@ -126,7 +126,7 @@ public class ComponentValue implements CssModel
 
         for (List<Value> list : groups)
         {
-            if ( !firstList ) builder.append(", ");
+            if ( !firstList && !list.isEmpty() ) builder.append(", ");
 
             boolean firstItem = true;
 

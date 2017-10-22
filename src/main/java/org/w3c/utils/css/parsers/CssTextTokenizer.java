@@ -111,7 +111,7 @@ public class CssTextTokenizer
      */
     public boolean isStartAtRule()
     {
-        return reader.next() == '@';
+        return reader.next() == '@' && !reader.isEscaped();
     }
 
     /**
@@ -291,7 +291,7 @@ public class CssTextTokenizer
         return reader.readMarked();
     }
 
-    //FIXME: а нужен ли он? слишком сложный токен, отдается на откуп внешнему пользователю
+    //FIXME: пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ? пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     @Deprecated
     public String consumeFunction()
     {

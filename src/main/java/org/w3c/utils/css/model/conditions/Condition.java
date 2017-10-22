@@ -3,8 +3,8 @@ package org.w3c.utils.css.model.conditions;
 import org.w3c.utils.css.model.CssSimpleDeclaration;
 
 /**
- * Условие для @media или @condition.
- * Хранит выражение вида (property:value).
+ * РЈСЃР»РѕРІРёРµ РґР»СЏ @media РёР»Рё @condition.
+ * РҐСЂР°РЅРёС‚ РІС‹СЂР°Р¶РµРЅРёРµ РІРёРґР° (property:value).
  *
  * Created by Home on 27.08.2016.
  */
@@ -15,6 +15,6 @@ public class Condition extends CssSimpleDeclaration
         super(property, value);
     }
 
-    //TODO: необходимы правильные equals & hashcode для сравнения условий.  учесть, что (min-width: 960px) и (min-width: 10in) могут быть эквивалентны
-    //а значит, CssSimpleDeclaration должен уметь возвращать CssValue, которое умеет себя оптимизировать и приводить к другому
+    //TODO: РЅРµРѕР±С…РѕРґРёРјС‹ РїСЂР°РІРёР»СЊРЅС‹Рµ equals & hashcode РґР»СЏ СЃСЂР°РІРЅРµРЅРёСЏ СѓСЃР»РѕРІРёР№.  СѓС‡РµСЃС‚СЊ, С‡С‚Рѕ (min-width: 960px) Рё (min-width: 10in) РјРѕРіСѓС‚ Р±С‹С‚СЊ СЌРєРІРёРІР°Р»РµРЅС‚РЅС‹
+    //Р° Р·РЅР°С‡РёС‚, CssSimpleDeclaration РґРѕР»Р¶РµРЅ СѓРјРµС‚СЊ РІРѕР·РІСЂР°С‰Р°С‚СЊ CssValue, РєРѕС‚РѕСЂРѕРµ СѓРјРµРµС‚ СЃРµР±СЏ РѕРїС‚РёРјРёР·РёСЂРѕРІР°С‚СЊ Рё РїСЂРёРІРѕРґРёС‚СЊ Рє РґСЂСѓРіРѕРјСѓ
 }
